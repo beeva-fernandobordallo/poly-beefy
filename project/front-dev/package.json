@@ -1,0 +1,22 @@
+{
+	"name": "beefcake-front",
+	"version": "0.0.1",
+	"description": "Frontal del protal de formación externa de beeva",
+	"main": "main.js",
+	"scripts": {
+		"test": "polymer test"
+	},
+	"keywords": [
+		"front",
+		"beeva",
+		"portal",
+		"formacion"
+	],
+	"author": "beeva",
+	"license": "ISC",
+	"devDependencies": {
+		"gulp": "3.9.1",
+		"gulp-util": "3.0.7",
+		"polymer-cli": "0.14.0"
+	}
+}
