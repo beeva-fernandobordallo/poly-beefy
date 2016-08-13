@@ -1,3 +1,4 @@
 project/node_modules
+project/server-dev/node_modules
 project/front-dev/node_modules
 project/front-dev/bower_components
