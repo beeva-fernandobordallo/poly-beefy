@@ -1,0 +1,7 @@
+{
+  "name": "pfe-app",
+  "short_name": "pfe-app",
+  "description": "Front end para el portal de formación externa de beeva",
+  "start_url": "/",
+  "display": "standalone"
+}

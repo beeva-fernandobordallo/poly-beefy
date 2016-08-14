@@ -1,9 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-
 <!-- Login Dependencies -->
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
-
 <!-- App Shell dependencies -->
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
@@ -11,15 +9,15 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../../bower_components/paper-header-panel/paper-header-panel.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-
-
 <dom-module id="pfe-app">
 	<template>
-		<style>
-		:host {
+		<style include="iron-flex iron-flex-alignment">
+		<style>:host {
 			display: block;
 		}
+		
 		#loginContainer {
 			position: absolute;
 			top: 0;
@@ -29,8 +27,20 @@
 			margin-top: 100px;
 			text-align: center;
 		}
+		
+		paper-drawer-panel {
+			--paper-drawer-panel-drawer-container: {
+				background-color: #eee;
+				border-right: 1px solid #998;
+			}
+			;
+		}
 		</style>
-
+		<!-- Routing Elements START -->
+		<app-location route="{{route}}"></app-location>
+		<app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}">
+		</app-route>
+		<!-- Routing Elements END -->
 		<!-- Login Page START-->
 		<div id="loginContainer" hidden$="{{userActive}}">
 			<div class="login-display-block">
@@ -43,27 +53,32 @@
 			</div>
 		</div>
 		<!-- Login Page END-->
-		
 		<!-- Application Page START -->
-		<template is="dom-if" if="{{userActive}}">
-				<paper-drawer-panel>
-					<paper-header-panel drawer>
-						<paper-toolbar>
-							<div>Application</div>
-						</paper-toolbar>
-						<div> Drawer content... </div>
-					</paper-header-panel>
-					<paper-header-panel main>
-						<paper-toolbar>
-							<paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-							<div>Title</div>
-						</paper-toolbar>
-						<div> Main content... </div>
-					</paper-header-panel>
-				</paper-drawer-panel>
-		</template>
+		<div hidden$="{{!userActive}}">
+			<paper-drawer-panel id="drawerPanel">
+				<paper-header-panel drawer>
+					<paper-toolbar>
+						<div>PFE Menu</div>
+					</paper-toolbar>
+					<div>
+						<a href="/catalogo">Link Catalogo</a>
+					</div>
+				</paper-header-panel>
+				<paper-header-panel main>
+					<paper-toolbar>
+						<paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+						<div>{{routeData.page}}</div>
+					</paper-toolbar>
+					<div class="content">
+						<span id="scrollAnchor" class="hidden"></span>
+						<span>Info</span>
+						<span>Will Go</span>
+						<span>Here</span>
+					</div>
+				</paper-header-panel>
+			</paper-drawer-panel>
+		</div>
 		<!-- Application Page END -->
-
 	</template>
 	<script>
 	Polymer({
@@ -74,16 +89,22 @@
 			userActive: {
 				type: Boolean,
 				value: false
+			},
+
+			page: {
+				type: String,
+				observer: '_pageChanged'
 			}
 		},
 
 		observers: [
-			'_computeUserData(user, token)'
+			'_computeUserData(user, token)',
+			'_routeChange(routeData.page)'
 		],
 
 		/*App Lifecycle methods*/
-		ready: function(){
-			if(this.user && this.token){
+		ready: function() {
+			if (this.user && this.token) {
 				this.userActive = true;
 			}
 		},
@@ -93,8 +114,8 @@
 		 * @param  {Object} user User details
 		 * @param  {String} token Authentication token
 		 */
-		_computeUserData: function (user, token){
-			if (user && token){
+		_computeUserData: function(user, token) {
+			if (user && token) {
 				this.userActive = true;
 			} else {
 				this.userActive = false;
@@ -106,7 +127,47 @@
 		 */
 		_openLogin: function() {
 			window.open(window.location.origin + '/api/auth/google', '', 'width=1000,height=800');
-		}
+		},
+
+		_pageChanged: function(page) {
+			if(!this.userActive){
+				this.set('route.path', '/');
+				return;
+			}
+			if (page != null && page !== '') {
+				this.importHref(
+					this.resolveUrl('pfe-' + page + '.html'),
+					function() {
+						this._pageLoaded();
+					}, null, true);
+			}
+		},
+
+		_pageLoaded: function() {
+			this._ensureLazyLoaded();
+		},
+
+		_routeChange: function(route) {
+			// Abstract
+			this.page = route;
+			if (this.$.scrollAnchor) {
+				this.$.scrollAnchor.scrollIntoView();
+			}
+			if (this.$.drawerPanel){
+				this.$.drawerPanel.closeDrawer();
+			}
+		},
+
+		_ensureLazyLoaded: function() {
+			// load lazy resources after render and set `loadComplete` when done.
+			if (!this.loadComplete) {
+				Polymer.RenderStatus.afterNextRender(this, function() {
+					this.importHref(this.resolveUrl('lazy-resources.html'), function() {
+						this.loadComplete = true;
+					});
+				});
+			}
+		},
 
 	});
 	</script>

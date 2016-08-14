@@ -1,9 +1,42 @@
-<!DOCTYPE html><html><head>
+<!doctype html>
+<html>
+
+<head>
 	<title>pfe-app</title>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="manifest" href="/manifest.json">
-	<script>var PFE={};window.Polymer={lazyRegister:!0,dom:"shadow"},function(){if("registerElement"in document&&"import"in document.createElement("link")&&"content"in document.createElement("template"))PFE.isPolyfilled=!1;else{var e=document.createElement("script");e.src="/bower_components/webcomponentsjs/webcomponents-lite.min.js",document.head.appendChild(e),PFE.isPolyfilled=!0}}();</script>
+	<script>
+	// setup App global namespace
+	var PFE = {};
+
+	// setup Polymer options
+	window.Polymer = {
+		lazyRegister: true,
+		dom: 'shadow'
+	};
+
+	// load webcomponents polyfills
+	(function() {
+		if ('registerElement' in document && 'import' in document.createElement('link') && 'content' in document.createElement('template')) {
+			// browser has web components
+			PFE.isPolyfilled = false;
+		} else {
+			// polyfill web components
+			var e = document.createElement('script');
+			e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+			document.head.appendChild(e);
+			PFE.isPolyfilled = true;
+		}
+	})();
+
+	// load pre-caching service worker
+	// if ('serviceWorker' in navigator) {
+	// 	window.addEventListener('load', function() {
+	// 		navigator.serviceWorker.register('/service-worker.js');
+	// 	});
+	// }
+	</script>
 	<script src="/js/pfe-utils.js"></script>
 	<link rel="stylesheet" type="text/css" href="/css/pfe-main.css">
 	<link rel="import" href="/src/pfe-app/pfe-app.html">
@@ -15,8 +48,11 @@
 		<pfe-app user="{{user}}" token="{{token}}"></pfe-app>
 	</template>
 
-	<script>PFE.app=document.querySelector("#app"),PFE.isLocalStorage=PFE.utils.localStorageAvailable(),PFE.utils.checkOldSession();</script>
+	<script>
+		PFE.app = document.querySelector('#app');
+		PFE.isLocalStorage = PFE.utils.localStorageAvailable();
+		PFE.utils.checkOldSession();
+	</script>
+</body>
 
-
-
-</body></html>
+</html>
