@@ -2,6 +2,7 @@
   "entrypoint": "index.html",
   "shell": "src/pfe-app/pfe-app.html",
   "fragments": [
-  	"src/lazy-resources.html"
+  	"src/pfe-app/lazy-resources.html",
+  	"src/pfe-app/pfe-catalogo.html"
   ]
 }

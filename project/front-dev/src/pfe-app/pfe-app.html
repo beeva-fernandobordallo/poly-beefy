@@ -11,6 +11,10 @@
 <link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
 <link rel="import" href="../../bower_components/paper-header-panel/paper-header-panel.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <dom-module id="pfe-app">
 	<template>
 		<style include="iron-flex iron-flex-alignment">
@@ -34,6 +38,12 @@
 				border-right: 1px solid #998;
 			}
 			;
+		}
+		
+		.profile-img-holder {
+			border-radius: 50%;
+			width: 35px;
+			height: 35px;
 		}
 		</style>
 		<!-- Routing Elements START -->
@@ -67,13 +77,29 @@
 				<paper-header-panel main>
 					<paper-toolbar>
 						<paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-						<div>{{routeData.page}}</div>
+						<span class="title">{{pageTitle}}</span>
+						<paper-menu-button horizontal-align="right">
+							<div class="dropdown-trigger">
+								<iron-image class="profile-img-holder" src="{{user.img}}" preload sizing="contain"></iron-image>
+							</div>
+							<paper-menu class="dropdown-content">
+								<paper-item>Share</paper-item>
+								<paper-item>Settings</paper-item>
+								<paper-item>Help</paper-item>
+							</paper-menu>
+						</paper-menu-button>
 					</paper-toolbar>
 					<div class="content">
 						<span id="scrollAnchor" class="hidden"></span>
-						<span>Info</span>
-						<span>Will Go</span>
-						<span>Here</span>
+						<iron-pages selected="[[page]]" attr-for-selected="data-route">
+							<section data-route="">
+								Empty
+							</section>
+							<section data-route="catalogo">
+								Catalogo
+							</section>
+							<section data-route=""></section>
+						</iron-pages>
 					</div>
 				</paper-header-panel>
 			</paper-drawer-panel>
@@ -130,7 +156,8 @@
 		},
 
 		_pageChanged: function(page) {
-			if(!this.userActive){
+			if (!this.userActive) {
+				this._ensureLazyLoaded();
 				this.set('route.path', '/');
 				return;
 			}
@@ -153,7 +180,7 @@
 			if (this.$.scrollAnchor) {
 				this.$.scrollAnchor.scrollIntoView();
 			}
-			if (this.$.drawerPanel){
+			if (this.$.drawerPanel) {
 				this.$.drawerPanel.closeDrawer();
 			}
 		},
