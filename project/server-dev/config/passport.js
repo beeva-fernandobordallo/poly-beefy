@@ -79,7 +79,7 @@ module.exports = (passport, app) => {
 							googleId: user.google.id,
 							displayName: user.google.displayName
 						};
-						const token = jwt.sign(encryptData, app.get('secret'), { expiresIn: 200 });
+						const token = jwt.sign(encryptData, app.get('secret'), { expiresIn: 7200000 }); // 2 hours expiration
 						req.token = token;
 						return done(null, user);
 					}
