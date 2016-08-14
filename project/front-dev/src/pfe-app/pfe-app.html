@@ -37,10 +37,16 @@
 		
 		paper-drawer-panel {
 			--paper-drawer-panel-drawer-container: {
-				background-color: #eee;
+				background-color: #CCCCCC;
 				border-right: 1px solid #998;
-			}
-			;
+			};
+		}
+
+		paper-toolbar {
+			--paper-toolbar-background: #DAE253;
+			--paper-toolbar-title: {
+				color: #333333;
+			};
 		}
 		
 		.profile-img-holder {
@@ -49,8 +55,12 @@
 			height: 35px;
 		}
 
+		.menu-logo-holder {
+			height: 60px;
+		}
+
 		a {
-			color: black;
+			color: #333333;
 			text-decoration:none; 
 			cursor:pointer; 
 		}
@@ -60,6 +70,13 @@
 		<app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}">
 		</app-route>
 		<!-- Routing Elements END -->
+		<!-- Media Query Controls START -->
+		<iron-media-query query="max-width: 640px" query-matches="{{smallScreen}}">
+		</iron-media-query>
+		<iron-media-query query="min-width: 1200px" query-matches="{{largeScreen}}">
+		</iron-media-query>
+		<!-- Media Query Controls END -->
+
 		<!-- Login Page START-->
 		<div id="loginContainer" hidden$="{{userActive}}">
 			<div class="login-display-block">
@@ -72,16 +89,21 @@
 			</div>
 		</div>
 		<!-- Login Page END-->
+
 		<!-- Application Page START -->
 		<div hidden$="{{!userActive}}">
 			<paper-drawer-panel id="drawerPanel">
 				<paper-header-panel drawer>
 					<paper-toolbar>
-						<div>PFE Menu</div>
+						<img class="menu-logo-holder" src="/img/logo-BEEVA-horizontal-72-300x96.png" preload sizing="contain"></img>
 					</paper-toolbar>
 					<div>
-						<a href="/"><paper-item>Inicio</paper-item></a>
+						<a href="/"><paper-item>
+							<iron-icon icon="account-circle"></iron-icon> - Inicio
+						</paper-item></a>
 						<a href="/catalogo"><paper-item>Catálogo</paper-item></a>
+						<a href="/mis-cursos"><paper-item>Mis Cursos</paper-item></a>
+						<a href="/buzon"><paper-item>Buzón</paper-item></a>
 						<hr>
 						<paper-item on-tap="logout">Logout</paper-item>
 					</div>
@@ -103,7 +125,12 @@
 							<section data-route="catalogo">
 								<pfe-catalogo></pfe-catalogo>
 							</section>
-							<section data-route=""></section>
+							<section data-route="mis-cursos">
+								<pfe-miscursos></pfe-miscursos>
+							</section>
+							<section data-route="buzon">
+								<pfe-buzon></pfe-buzon>
+							</section>
 						</iron-pages>
 					</div>
 				</paper-header-panel>
@@ -133,7 +160,9 @@
 					return [
 						'',
 						'/',
-						'catalogo'
+						'catalogo',
+						'mis-cursos',
+						'buzon'
 					];
 				}
 			},
@@ -142,8 +171,10 @@
 				type: Object,
 				value: function(){
 					return {
-						'': 'Home - Portal de Formación Externa',
-						'catalogo': 'Catálogo de Cursos / Certificaciones'
+						'': 'BEE an Expert - Formación Externa',
+						'catalogo': 'Catálogo de Cursos / Certificaciones',
+						'mis-cursos': 'Portfolio Personal',
+						'buzon': 'Buzón PFE'
 					};
 				}
 			}
@@ -168,6 +199,7 @@
 		 */
 		logout: function(){
 			this.fire('logout');
+			this.set('route.path', '/');
 		},
 
 		/**
