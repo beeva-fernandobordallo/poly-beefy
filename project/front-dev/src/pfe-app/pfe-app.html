@@ -1,30 +1,113 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
+<!-- Login Dependencies -->
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<!-- App Shell dependencies -->
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+
 <dom-module id="pfe-app">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello killer app! [[prop1]]</h2>
-    <button onclick="window.open(window.location.origin + '/api/auth/google', '', 'width=1000,height=800');">
-    Google Auth Trial
-  </button>
-  </template>
+	<template>
+		<style>
+		:host {
+			display: block;
+		}
+		#loginContainer {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			margin-top: 100px;
+			text-align: center;
+		}
+		</style>
 
-  <script>
-    Polymer({
+		<!-- Login Page START-->
+		<div id="loginContainer" hidden$="{{userActive}}">
+			<div class="login-display-block">
+				<iron-image src="/img/logo-BEEVA-vertical-72-300x192.png" preload fade></iron-image>
+				<h4>Portal de Formación Externa</h4>
+				<paper-button raised on-tap="_openLogin">Login</paper-button>
+				<br>
+				<br>
+				<span><small><i>(Acceso con tu cuenta @beeva)</i></small></span>
+			</div>
+		</div>
+		<!-- Login Page END-->
+		
+		<!-- Application Page START -->
+		<template is="dom-if" if="{{userActive}}">
+				<paper-drawer-panel>
+					<paper-header-panel drawer>
+						<paper-toolbar>
+							<div>Application</div>
+						</paper-toolbar>
+						<div> Drawer content... </div>
+					</paper-header-panel>
+					<paper-header-panel main>
+						<paper-toolbar>
+							<paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+							<div>Title</div>
+						</paper-toolbar>
+						<div> Main content... </div>
+					</paper-header-panel>
+				</paper-drawer-panel>
+		</template>
+		<!-- Application Page END -->
 
-      is: 'pfe-app',
+	</template>
+	<script>
+	Polymer({
 
-      properties: {
-        prop1: {
-          type: String,
-          value: 'pfe-app',
-        },
-      },
+		is: 'pfe-app',
 
-    });
-  </script>
+		properties: {
+			userActive: {
+				type: Boolean,
+				value: false
+			}
+		},
+
+		observers: [
+			'_computeUserData(user, token)'
+		],
+
+		/*App Lifecycle methods*/
+		ready: function(){
+			if(this.user && this.token){
+				this.userActive = true;
+			}
+		},
+
+		/**
+		 * Observes User and Token data
+		 * @param  {Object} user User details
+		 * @param  {String} token Authentication token
+		 */
+		_computeUserData: function (user, token){
+			if (user && token){
+				this.userActive = true;
+			} else {
+				this.userActive = false;
+			}
+		},
+
+		/**
+		 * Open a pop up window to login users with a google account
+		 */
+		_openLogin: function() {
+			window.open(window.location.origin + '/api/auth/google', '', 'width=1000,height=800');
+		}
+
+	});
+	</script>
 </dom-module>

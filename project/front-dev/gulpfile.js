@@ -78,7 +78,7 @@ gulp.task('deploy-dev', ['clear-public'], function(){
 	gulp.src([
 		'./index.html',
 		'./manifest.json',
-		'./css/*.css',
+		'./css/**/*',
 		'./js/*.js',
 		'./img/*.*',
 		'./src/**/*.html',
@@ -100,7 +100,7 @@ gulp.task('deploy-pro', ['clear-public', 'poly-build'], function(){
 	gutil.log('Copied bundled webApp version to public!');
 
 	gulp.src([
-		'./css/*.css',
+		'./css/**/*',
 		'./js/*.js',
 		'./img/*.*'
 	], { base: './'})
@@ -166,9 +166,7 @@ gulp.task('css-reload', function(done){
 	});
 
 	gulp.src([
-		'./css/*.css',
-		'./js/*.js',
-		'./img/*.*'
+		'./css/**/*'
 	], { base: './'})
 	.pipe(gulp.dest('../server-dev/public'));
 	gutil.log('Copied CSS file dependecies to public!')

@@ -15,7 +15,7 @@
             var token = '<%= token %>';
             var message = '<%= message %>'
 
-            window.opener.PFE.authService(state, user, token, message);
+            window.opener.PFE.utils.authLink(state, user, token, message);
 
         }
         window.close();

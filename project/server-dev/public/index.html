@@ -1,24 +1,22 @@
-<!doctype html>
-<html>
-
-<head>
+<!DOCTYPE html><html><head>
 	<title>pfe-app</title>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<link rel="manifest" href="/manifest.json">
-	<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+	<script>var PFE={};window.Polymer={lazyRegister:!0,dom:"shadow"},function(){if("registerElement"in document&&"import"in document.createElement("link")&&"content"in document.createElement("template"))PFE.isPolyfilled=!1;else{var e=document.createElement("script");e.src="/bower_components/webcomponentsjs/webcomponents-lite.min.js",document.head.appendChild(e),PFE.isPolyfilled=!0}}();</script>
+	<script src="/js/pfe-utils.js"></script>
+	<link rel="stylesheet" type="text/css" href="/css/pfe-main.css">
 	<link rel="import" href="/src/pfe-app/pfe-app.html">
 </head>
 
 <body>
-	<pfe-app></pfe-app>
-	<script>
-	var PFE = {};
 
-	PFE.authService = function(state, user, token) {
-		console.log(arguments);
-	}
-	</script>
-</body>
+	<template is="dom-bind" id="app">
+		<pfe-app user="{{user}}" token="{{token}}"></pfe-app>
+	</template>
 
-</html>
+	<script>PFE.app=document.querySelector("#app"),PFE.isLocalStorage=PFE.utils.localStorageAvailable(),PFE.utils.checkOldSession();</script>
+
+
+
+</body></html>
