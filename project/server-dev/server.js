@@ -21,7 +21,7 @@ const app = express();
 app.set('secret', serverConf.serverSecret);
 
 // Connect to Database
-// mongoose.connect(databaseConf.url);
+mongoose.connect(databaseConf.url);
 
 const serverPort = process.env.PORT || 3000;
 
