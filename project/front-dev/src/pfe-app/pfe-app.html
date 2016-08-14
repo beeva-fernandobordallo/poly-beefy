@@ -15,6 +15,9 @@
 <link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="pfe-home.html">
+
 <dom-module id="pfe-app">
 	<template>
 		<style include="iron-flex iron-flex-alignment">
@@ -45,6 +48,12 @@
 			width: 35px;
 			height: 35px;
 		}
+
+		a {
+			color: black;
+			text-decoration:none; 
+			cursor:pointer; 
+		}
 		</style>
 		<!-- Routing Elements START -->
 		<app-location route="{{route}}"></app-location>
@@ -71,7 +80,8 @@
 						<div>PFE Menu</div>
 					</paper-toolbar>
 					<div>
-						<a href="/catalogo">Link Catalogo</a>
+						<a href="/"><paper-item>Inicio</paper-item></a>
+						<a href="/catalogo"><paper-item>Catálogo</paper-item></a>
 					</div>
 				</paper-header-panel>
 				<paper-header-panel main>
@@ -83,9 +93,7 @@
 								<iron-image class="profile-img-holder" src="{{user.img}}" preload sizing="contain"></iron-image>
 							</div>
 							<paper-menu class="dropdown-content">
-								<paper-item>Share</paper-item>
-								<paper-item>Settings</paper-item>
-								<paper-item>Help</paper-item>
+								<paper-item on-tap="logout">Logout</paper-item>
 							</paper-menu>
 						</paper-menu-button>
 					</paper-toolbar>
@@ -93,10 +101,10 @@
 						<span id="scrollAnchor" class="hidden"></span>
 						<iron-pages selected="[[page]]" attr-for-selected="data-route">
 							<section data-route="">
-								Empty
+								<pfe-home></pfe-home>
 							</section>
 							<section data-route="catalogo">
-								Catalogo
+								<pfe-catalogo></pfe-catalogo>
 							</section>
 							<section data-route=""></section>
 						</iron-pages>
@@ -120,6 +128,27 @@
 			page: {
 				type: String,
 				observer: '_pageChanged'
+			},
+
+			pageWhitList: {
+				type: Array,
+				value: function(){
+					return [
+						'',
+						'/',
+						'catalogo'
+					];
+				}
+			},
+
+			pageTitles: {
+				type: Object,
+				value: function(){
+					return {
+						'': 'Home - Portal de Formación Externa',
+						'catalogo': 'Catálogo de Cursos / Certificaciones'
+					};
+				}
 			}
 		},
 
@@ -133,6 +162,15 @@
 			if (this.user && this.token) {
 				this.userActive = true;
 			}
+		},
+
+		/*App methods*/
+		logout: function(){
+			// clear LocalStorage
+			window.localStorage.removeItem('userInfo');
+			window.localStorage.removeItem('accessToken');
+			this.user = null;
+			this.token = null;
 		},
 
 		/**
@@ -156,6 +194,11 @@
 		},
 
 		_pageChanged: function(page) {
+			if(!this._checkWhitList(page)){
+				this.set('route.path', '/');
+				return;
+			}
+			this._setPageTitle(page);
 			if (!this.userActive) {
 				this._ensureLazyLoaded();
 				this.set('route.path', '/');
@@ -195,6 +238,21 @@
 				});
 			}
 		},
+
+		_sectionLoaded: function(e){
+			this.pageTitle = e.detail.title;
+		},
+
+		_checkWhitList: function(page){
+			if(this.pageWhitList.indexOf(page) !== -1){
+				return true;
+			}
+			return false;
+		},
+
+		_setPageTitle: function(page){
+			this.pageTitle = this.pageTitles[page];
+		}
 
 	});
 	</script>
