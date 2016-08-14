@@ -1,38 +1,22 @@
-# \<pfe-app\>
+# PFE - Front-End
 
-Front end para el portal de formación externa de beeva
+Proyecto de front-end basado en Polymer y apoyado en la herramienta Polymer-CLI para la construcción de builds. **Ir al README del proyecto de Back-end (server-dev folder) para leer pasos con los que levantar el servidor en modo 'Front developer'**.
 
-## Install the Polymer-CLI
+### Instalación de dependencias
 
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
+Hay que tener instalados **node y npm**. Adicionalmente hay que tener instalado bower:
 
-## Viewing Your Application
+`npm install -g bower`
 
-```
-$ polymer serve
-```
+Posteriormente lanzar:
 
-## Building Your Application
+- `npm install && bower install`
 
-```
-$ polymer build
-```
+### Comandos Gulp
 
-This will create a `build/` folder with `bundled/` and `unbundled/` sub-folders
-containing a bundled (Vulcanized) and unbundled builds, both run through HTML,
-CSS, and JS optimizers.
+Hay disponibles dos comandos fundamentales para 'trasladar' versiones DEV y PRO a la carpeta que servirá el backend en modo producción. Estos son:
 
-You can serve the built versions by giving `polymer serve` a folder to serve
-from:
+- `gulp deploy-dev`
+- `gulp deploy-pro`
 
-```
-$ polymer serve build/bundled
-```
-
-## Running Tests
-
-```
-$ polymer test
-```
-
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+El primero traslada una copia del proyecto sin vulcanizar junto a todas sus dependencias. El segundo lanza el comando `polymer build` en segundo plano, vulcanizando nuestro proyecto y posteriormente trasladando los archivos necesarios al proyecto de Back-end (/server-dev/public).

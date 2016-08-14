@@ -19,7 +19,10 @@ const app = express();
 
 // Application configuration
 app.set('secret', serverConf.serverSecret);
+// The first parameter given on lauch will be considered the Environment
+app.set('env', process.argv[2]);
 
+// Connect to Database
 mongoose.connect(databaseConf.url);
 
 const serverPort = process.env.PORT || 3000;
