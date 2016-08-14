@@ -22,8 +22,8 @@ module.exports = function routeSetup(app, passport) {
 				'x-sent': true
 			}
 		};
-
-		if(app.env === 'dev'){
+		console.log(process.argv[2]);
+		if(process.argv[2] === 'dev'){
 			opts.root = './../front-dev/'
 		}
 		res.sendFile('index.html', opts, (err) => {

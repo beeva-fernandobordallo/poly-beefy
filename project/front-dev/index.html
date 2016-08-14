@@ -45,11 +45,15 @@
 <body>
 
 	<template is="dom-bind" id="app">
-		<pfe-app user="{{user}}" token="{{token}}"></pfe-app>
+		<pfe-app user="{{user}}" token="{{token}}" on-logout="logout"></pfe-app>
 	</template>
 
 	<script>
 		PFE.app = document.querySelector('#app');
+		PFE.app.logout = function () {
+			PFE.utils.logout();
+		};
+
 		PFE.isLocalStorage = PFE.utils.localStorageAvailable();
 		PFE.utils.checkOldSession();
 	</script>

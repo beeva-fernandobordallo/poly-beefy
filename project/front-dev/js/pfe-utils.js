@@ -32,11 +32,11 @@ PFE.utils.getLocalStore = function (key) {
 }
 
 PFE.utils.removeLocalStore = function (key) {
-	// Abstract
+	window.localStorage.removeItem(key);
 }
 
 PFE.utils.clearLocalStore = function () {
-	// Abstract
+	window.localStorage.clear();
 }
 
 PFE.utils.buildDataString = function (data) {
@@ -74,4 +74,17 @@ PFE.utils.checkOldSession = function () {
 		PFE.app.user = PFE.utils.getLocalStore('userInfo');
 		PFE.app.token = PFE.utils.getLocalStore('accessToken');
 	}
+}
+
+PFE.utils.logout = function () {
+	// SHOULD CLEAR THE LOCAL STORAGE
+	// For the time being we remove user data
+	if(PFE.isLocalStorage){
+		PFE.utils.clearLocalStore();
+	} else {
+		PFE.memCache.userInfo = null;
+		PFE.memCache.accessToken = null;
+	}
+	PFE.app.user = null;
+	PFE.app.token = null;
 }

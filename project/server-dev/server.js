@@ -19,11 +19,9 @@ const app = express();
 
 // Application configuration
 app.set('secret', serverConf.serverSecret);
-// The first parameter given on lauch will be considered the Environment
-app.set('env', process.argv[2]);
 
 // Connect to Database
-mongoose.connect(databaseConf.url);
+// mongoose.connect(databaseConf.url);
 
 const serverPort = process.env.PORT || 3000;
 
@@ -37,7 +35,11 @@ passportConf(passport, app);
 app.use(passport.initialize());
 
 // Setup static file access
-app.use(express.static(path.join(__dirname, 'public')));
+if(process.argv[2] === 'dev'){
+	app.use(express.static(path.join(__dirname, '../front-dev')));
+} else {
+	app.use(express.static(path.join(__dirname, 'public')));
+}
 
 app.set('views', __dirname + '/app/views');
 app.set('view engine', 'ejs');
