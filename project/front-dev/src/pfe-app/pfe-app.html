@@ -37,13 +37,19 @@
 		
 		paper-drawer-panel {
 			--paper-drawer-panel-drawer-container: {
-				background-color: #CCCCCC;
 				border-right: 1px solid #998;
 			};
 		}
 
-		paper-toolbar {
+		paper-toolbar.main-toolbar{
 			--paper-toolbar-background: #DAE253;
+			--paper-toolbar-title: {
+				color: #333333;
+			};
+		}
+
+		paper-toolbar.drawer-toolbar{
+			--paper-toolbar-background: #fff;
 			--paper-toolbar-title: {
 				color: #333333;
 			};
@@ -94,22 +100,45 @@
 		<div hidden$="{{!userActive}}">
 			<paper-drawer-panel id="drawerPanel">
 				<paper-header-panel drawer>
-					<paper-toolbar>
+					<paper-toolbar class="drawer-toolbar">
 						<img class="menu-logo-holder" src="/img/logo-BEEVA-horizontal-72-300x96.png" preload sizing="contain"></img>
 					</paper-toolbar>
 					<div>
 						<a href="/"><paper-item>
-							<iron-icon icon="account-circle"></iron-icon> - Inicio
+							<iron-icon icon="home"></iron-icon> 
+							<span class="flex"></span>
+							Inicio
+							<span class="flex"></span>
 						</paper-item></a>
-						<a href="/catalogo"><paper-item>Catálogo</paper-item></a>
-						<a href="/mis-cursos"><paper-item>Mis Cursos</paper-item></a>
-						<a href="/buzon"><paper-item>Buzón</paper-item></a>
+						<a href="/catalogo"><paper-item>
+							<iron-icon icon="view-list"></iron-icon>
+							<span class="flex"></span>
+							Catálogo
+							<span class="flex"></span>
+						</paper-item></a>
+						<a href="/mis-cursos"><paper-item>
+							<iron-icon icon="flight-takeoff"></iron-icon>
+							<span class="flex"></span>
+							Mis Cursos
+							<span class="flex"></span>
+						</paper-item></a>
+						<a href="/buzon"><paper-item>
+							<iron-icon icon="mail"></iron-icon>
+							<span class="flex"></span>
+							Buzón
+							<span class="flex"></span>
+						</paper-item></a>
 						<hr>
-						<paper-item on-tap="logout">Logout</paper-item>
+						<paper-item on-tap="logout">
+							<iron-icon icon="lock"></iron-icon>
+							<span class="flex"></span>
+							Logout
+							<span class="flex"></span>
+						</paper-item>
 					</div>
 				</paper-header-panel>
 				<paper-header-panel main>
-					<paper-toolbar>
+					<paper-toolbar class="main-toolbar">
 						<paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
 						<span class="title">{{pageTitle}}</span>
 						<div>
@@ -219,7 +248,8 @@
 		 * Open a pop up window to login users with a google account
 		 */
 		_openLogin: function() {
-			window.open(window.location.origin + '/api/auth/google', '', 'width=1000,height=800');
+			var dimensions = 'width=' + window.screen.availWidth + ',height=' + window.screen.availHeight;
+			window.open(window.location.origin + '/api/auth/google', '', dimensions);
 		},
 
 		_pageChanged: function(page) {
