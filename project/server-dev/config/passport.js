@@ -63,7 +63,8 @@ module.exports = (passport, app) => {
 							const encryptData = {
 								id: newUser._id,
 								googleId: newUser.google.id,
-								displayName: newUser.google.displayName
+								displayName: newUser.google.displayName,
+								role: newUser.role
 							};
 							const token = jwt.sign(encryptData, app.get('secret'), { expiresIn: 200 });
 							req.token = token;
@@ -77,7 +78,8 @@ module.exports = (passport, app) => {
 						const encryptData = {
 							id: user._id,
 							googleId: user.google.id,
-							displayName: user.google.displayName
+							displayName: user.google.displayName,
+							role: user.role
 						};
 						const token = jwt.sign(encryptData, app.get('secret'), { expiresIn: 7200000 }); // 2 hours expiration
 						req.token = token;

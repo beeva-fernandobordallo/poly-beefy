@@ -48,7 +48,8 @@ module.exports = function apiRouteSetup(app, passport) {
 					lang: googleUsr.fullProfile.language,
 					img: googleUsr.fullProfile.image.url,
 					plusUser: googleUsr.fullProfile.isPlusUser,
-					personalUrl: googleUsr.fullProfile.url
+					personalUrl: googleUsr.fullProfile.url,
+					role: req.user.role
 				};
 				res.render('after-auth', {
 					state: 'success',

@@ -14,13 +14,19 @@ const userSchema = mongoose.Schema({
 		email: String,
 		displayName: String,
 		fullProfile: Object
+	},
+	courses: {
+		type: Array // Should contain ID, Name and Date
+	},
+	role: {
+		type: String,
+		default: 'user'
 	}
-
 });
 
 
 /**
- * Add methods to the user Schema
+ * Add methods to the user Instance
  */
 
 // Abstract
