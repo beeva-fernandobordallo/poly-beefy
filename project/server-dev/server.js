@@ -35,7 +35,8 @@ passportConf(passport, app);
 app.use(passport.initialize());
 
 // Setup static file access
-if(process.argv[2] === 'dev'){
+if(process.env.NODE_ENV === 'dev'){
+	console.log('App Started in DEVELOPMENT MODE');
 	app.use(express.static(path.join(__dirname, '../front-dev')));
 } else {
 	app.use(express.static(path.join(__dirname, 'public')));

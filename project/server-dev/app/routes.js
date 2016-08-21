@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 // Import API route definitions module
 const apiRouteDefinitions = require('./api/routes');
+const devApiRouteDefinitions = require('./api/devRoutes');
 
 
 // Main route setup function exported
@@ -13,6 +14,11 @@ module.exports = function routeSetup(app, passport) {
 
 	// Create routes bound the api router
 	apiRouteDefinitions(app, passport);
+
+	// If in DEVELOPMENT MODE include dev API endpoints
+	if(process.env.NODE_ENV === 'dev'){
+		devApiRouteDefinitions(app);
+	}
 
 	app.get('*', (req, res) => {
 		var opts = {
@@ -23,7 +29,7 @@ module.exports = function routeSetup(app, passport) {
 			}
 		};
 		console.log(process.argv[2]);
-		if(process.argv[2] === 'dev'){
+		if(process.env.NODE_ENV === 'dev'){
 			opts.root = './../front-dev/'
 		}
 		res.sendFile('index.html', opts, (err) => {

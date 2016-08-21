@@ -66,7 +66,7 @@ module.exports = function apiRouteSetup(app, passport) {
 	});
 
 	/**
-	 * Authentication middleware (AWESOMEEE!!)
+	 * Authentication middleware
 	 */
 	apiRoutes.use((req, res, next) => {
 		const token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -76,9 +76,9 @@ module.exports = function apiRouteSetup(app, passport) {
 			jwt.verify(token, app.get('secret'), (err, decodedToken) => {
 				if (err) {
 					const wrongTokenAnswer = {
-						success: false,
-						message: 'Bad token!'
+						message: 'Bad token'
 					};
+					res.status(401);
 					return res.end(JSON.stringify(wrongTokenAnswer));
 				} else {
 					req.decoded = decodedToken;
@@ -87,7 +87,6 @@ module.exports = function apiRouteSetup(app, passport) {
 			})
 		} else {
 			const noTokenAnswer = {
-				success: false,
 				message: 'No token provided'
 			};
 			return res.status(403).end(JSON.stringify(noTokenAnswer));
@@ -163,9 +162,24 @@ module.exports = function apiRouteSetup(app, passport) {
 	/**
 	 * Protected Routes
 	 */
-	apiRoutes.get('/getProfileData', (req, res) => {
-		res.end(JSON.stringify(req.decoded));
-	});
+
+
+
+
+
+
+
+
+
+	 // Testing route - Send decoded token to user
+	 // 
+	 // apiRoutes.get('/getDecodedToken', (req, res) => {
+	 // 	res.end(JSON.stringify(req.decoded));
+	 // });
+
+	/*
+	 * Bind routes to base route '/api'
+	 */
 
 	app.use('/api', apiRoutes);
 

@@ -21,17 +21,17 @@ module.exports = (passport, app) => {
 		},
 		(req, token, refreshToken, profile, done) => {
 
-			console.log('USER LOGGED IN WITH GOOGLE ACCOUNT');
+			// console.log('USER LOGGED IN WITH GOOGLE ACCOUNT');
 
-			console.log('Token: ' + token);
-			console.log('Refresh Token: ' + refreshToken);
-			console.log('Profile:');
-			console.log(profile);
+			// console.log('Token: ' + token);
+			// console.log('Refresh Token: ' + refreshToken);
+			// console.log('Profile:');
+			// console.log(profile);
 
 			// User.findOne won't fire until we have all our data back from Google
 			process.nextTick(function() {
 
-				var beevaRegex = new RegExp("@beeva.com")
+				var beevaRegex = new RegExp("@beeva.com$")
 				if(!profile.emails[0].value || !beevaRegex.test(profile.emails[0].value)){
 					return done(null, {error: true});
 				}
@@ -66,7 +66,7 @@ module.exports = (passport, app) => {
 								displayName: newUser.google.displayName,
 								role: newUser.role
 							};
-							const token = jwt.sign(encryptData, app.get('secret'), { expiresIn: 200 });
+							const token = jwt.sign(encryptData, app.get('secret'), { expiresIn: 7200 }); // in seconds (2 hours)
 							req.token = token;
 
 							// if successful, return the new user
@@ -81,7 +81,7 @@ module.exports = (passport, app) => {
 							displayName: user.google.displayName,
 							role: user.role
 						};
-						const token = jwt.sign(encryptData, app.get('secret'), { expiresIn: 7200000 }); // 2 hours expiration
+						const token = jwt.sign(encryptData, app.get('secret'), { expiresIn: 7200 }); // in seconds (2 hours)
 						req.token = token;
 						return done(null, user);
 					}
