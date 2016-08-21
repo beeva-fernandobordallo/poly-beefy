@@ -4,6 +4,9 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
+const courseCtrl = require('./controllers/course.controller');
+const roleCtrl = require('./controllers/role.controller');
+
 // Main route setup function exported
 module.exports = function apiRouteSetup(app, passport) {
 
@@ -157,16 +160,19 @@ module.exports = function apiRouteSetup(app, passport) {
 
 	 */
 	// ====================================================================
+	// ==========================Protected Routes==========================
 	// ====================================================================
 
+
 	/**
-	 * Protected Routes
+	 * Course CRUD Routes
 	 */
 
+	apiRoutes.get('/courses', courseCtrl.listAllCourses);
+	apiRoutes.get('/courses/active', courseCtrl.listActiveCourses);
+	apiRoutes.get('/courses/old', courseCtrl.listOldCourses);
 
-
-
-
+	apiRoutes.post('/courses/create', roleCtrl.isAdmin, courseCtrl.createCourse);
 
 
 

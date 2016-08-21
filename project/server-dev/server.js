@@ -28,6 +28,7 @@ const serverPort = process.env.PORT || 3000;
 // Setup general use middleware
 app.use(morgan('dev'));
 app.use(bodyParser.json());
+app.use(bodyParser.raw());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Configure Passport

@@ -9,11 +9,11 @@ const mongoose = require('mongoose');
 const courseSchema = mongoose.Schema({
 	name: {
 		type: String,
-		required: true
+		required: 'Course name is required'
 	},
 	description: {
 		type: String,
-		required: true
+		required: 'Course description is required'
 	},
 	entity: {
 		type: String
@@ -23,15 +23,15 @@ const courseSchema = mongoose.Schema({
 	},
 	cost: {
 		type: Number,
-		required: true
+		required: 'Course cost is required'
 	},
 	date: {
 		type: Number,
-		required: true
+		required: 'Course date is required'
 	},
 	inscription_limit: {
 		type: Number,
-		required: true // 0 = Sin limite
+		required: 'Course inscription limit is required' // 0 = Sin limite
 	},
 	created_date: {
 		type: Date,
