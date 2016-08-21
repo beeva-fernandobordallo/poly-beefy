@@ -59,6 +59,9 @@
 			border-radius: 50%;
 			width: 35px;
 			height: 35px;
+			-webkit-box-shadow: 0 8px 6px -6px black;
+			-moz-box-shadow: 0 8px 6px -6px black;
+			box-shadow: 0 8px 6px -6px black;
 		}
 
 		.menu-logo-holder {
@@ -104,37 +107,39 @@
 						<img class="menu-logo-holder" src="/img/logo-BEEVA-horizontal-72-300x96.png" preload sizing="contain"></img>
 					</paper-toolbar>
 					<div>
-						<a href="/"><paper-item>
-							<iron-icon icon="home"></iron-icon> 
-							<span class="flex"></span>
-							Inicio
-							<span class="flex"></span>
-						</paper-item></a>
-						<a href="/catalogo"><paper-item>
-							<iron-icon icon="view-list"></iron-icon>
-							<span class="flex"></span>
-							Catálogo
-							<span class="flex"></span>
-						</paper-item></a>
-						<a href="/mis-cursos"><paper-item>
-							<iron-icon icon="flight-takeoff"></iron-icon>
-							<span class="flex"></span>
-							Mis Cursos
-							<span class="flex"></span>
-						</paper-item></a>
-						<a href="/buzon"><paper-item>
-							<iron-icon icon="mail"></iron-icon>
-							<span class="flex"></span>
-							Buzón
-							<span class="flex"></span>
-						</paper-item></a>
-						<hr>
-						<paper-item on-tap="logout">
-							<iron-icon icon="lock"></iron-icon>
-							<span class="flex"></span>
-							Logout
-							<span class="flex"></span>
-						</paper-item>
+						<paper-menu>
+							<a href="/"><paper-item>
+								<iron-icon icon="home"></iron-icon> 
+								<span class="flex"></span>
+								Inicio
+								<span class="flex"></span>
+							</paper-item></a>
+							<a href="/catalogo"><paper-item>
+								<iron-icon icon="view-list"></iron-icon>
+								<span class="flex"></span>
+								Catálogo
+								<span class="flex"></span>
+							</paper-item></a>
+							<a href="/mis-cursos"><paper-item>
+								<iron-icon icon="flight-takeoff"></iron-icon>
+								<span class="flex"></span>
+								Mis Cursos
+								<span class="flex"></span>
+							</paper-item></a>
+							<a href="/buzon"><paper-item>
+								<iron-icon icon="mail"></iron-icon>
+								<span class="flex"></span>
+								Buzón
+								<span class="flex"></span>
+							</paper-item></a>
+							<hr>
+							<paper-item on-tap="logout">
+								<iron-icon icon="lock"></iron-icon>
+								<span class="flex"></span>
+								Logout
+								<span class="flex"></span>
+							</paper-item>
+						</paper-menu>
 					</div>
 				</paper-header-panel>
 				<paper-header-panel main>
