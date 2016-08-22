@@ -15,7 +15,7 @@ module.exports = function routeSetup(app, passport) {
 	// Create routes bound the api router
 	apiRouteDefinitions(app, passport);
 
-	// If in DEVELOPMENT MODE include dev API endpoints
+	// If in DEVELOPMENT MODE include dev-api router endpoints
 	if(process.env.NODE_ENV === 'dev'){
 		devApiRouteDefinitions(app);
 	}
