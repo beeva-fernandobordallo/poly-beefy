@@ -1,8 +1,12 @@
 'use strict';
 
-exports.handleQueryError = (err, res, ep /* end Point*/) => {
-	console.err('Error: ' + err);
-	res.status(500).end(JSON.stringify({query: ep, error: err}));
+exports.handleQueryError = (err, res, ep /* endpoint */) => {
+	console.log('ERROR LOG:: ' + err);
+	const errorObj = {
+		query: ep,
+		error: err
+	};
+	res.status(500).end(JSON.stringify(errorObj));
 };
 
 exports.handleQueryResult = (result, res) => {
@@ -30,6 +34,15 @@ exports.handleMiddlewareQuery = (result, req, next) => {
 exports.handleCreateAndEdit = (result, res) => {
 	let responseObj = {
 		data: result,
+		meta: Date.now()
+	};
+	res.status(200).end(JSON.stringify(responseObj));
+};
+
+exports.handleDelete = (res) => {
+	let responseObj = {
+		data: null,
+		message: 'Information deleted correctly',
 		meta: Date.now()
 	};
 	res.status(200).end(JSON.stringify(responseObj));

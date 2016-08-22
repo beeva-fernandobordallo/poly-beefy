@@ -163,6 +163,9 @@ module.exports = function apiRouteSetup(app, passport) {
 	// ==========================Protected Routes==========================
 	// ====================================================================
 
+	// All routes from here down require a serverSigned token in order to pass our middleware
+	// Any authentication levels from here on are checked with the decoded token which has the
+	// user's role data encrypted inside it
 
 	/**
 	 * Course CRUD Routes
@@ -177,6 +180,9 @@ module.exports = function apiRouteSetup(app, passport) {
 
 	// Update
 	apiRoutes.put('/courses/edit', roleCtrl.isAdmin, courseCtrl.findById, courseCtrl.editCourse);
+
+	// Detele
+	apiRoutes.delete('/courses/delete', roleCtrl.isAdmin, courseCtrl.findById, courseCtrl.deleteCourse);
 
 
 	 // Testing route - Send decoded token to user

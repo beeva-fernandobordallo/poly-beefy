@@ -97,6 +97,21 @@ exports.editCourse = (req, res) => {
 };
 
 
+exports.deleteCourse = (req, res) => {
+	if (req.data && req.data.length) {
+		let course = req.data[0];
+		course.remove((err) => {
+			if (err) {
+				return handlers.handleQueryError(err, res, 'deleteCourse');
+			}
+			handlers.handleDelete(res);
+		});
+	} else {
+		handlers.handle404(res);
+	}
+};
+
+
 exports.findById = (req, res, next) => {
 	if (req.body._id) {
 		const query = Course.find({_id: req.body._id});
