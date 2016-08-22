@@ -28,7 +28,6 @@ module.exports = function routeSetup(app, passport) {
 				'x-sent': true
 			}
 		};
-		console.log(process.argv[2]);
 		if(process.env.NODE_ENV === 'dev'){
 			opts.root = './../front-dev/'
 		}
@@ -37,7 +36,7 @@ module.exports = function routeSetup(app, passport) {
 				console.log(err);
 				res.status(err.status).end();
 			} else {
-				console.log('index.html served');
+				console.log('LOG:: index.html served');
 			}
 
 		});
