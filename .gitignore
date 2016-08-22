@@ -5,3 +5,4 @@ project/server-dev/public/bower_components
 project/front-dev/node_modules
 project/front-dev/bower_components
 project/front-dev/build
+project/front-dev/src/pfe_components/**/bower_components
