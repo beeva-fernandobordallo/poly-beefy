@@ -167,14 +167,16 @@ module.exports = function apiRouteSetup(app, passport) {
 	/**
 	 * Course CRUD Routes
 	 */
-
+	// Lists
 	apiRoutes.get('/courses', courseCtrl.listAllCourses);
 	apiRoutes.get('/courses/active', courseCtrl.listActiveCourses);
 	apiRoutes.get('/courses/old', courseCtrl.listOldCourses);
 
+	// Create
 	apiRoutes.post('/courses/create', roleCtrl.isAdmin, courseCtrl.createCourse);
 
-
+	// Update
+	apiRoutes.put('/courses/edit', roleCtrl.isAdmin, courseCtrl.findById, courseCtrl.editCourse);
 
 
 	 // Testing route - Send decoded token to user

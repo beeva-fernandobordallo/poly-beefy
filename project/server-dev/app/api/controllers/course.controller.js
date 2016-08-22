@@ -62,6 +62,52 @@ exports.createCourse = (req, res) => {
 		if (err) {
 			return handlers.handleQueryError(err, res, 'createCourse');
 		}
-		handlers.createHandler(course, res);
+		handlers.handleCreateAndEdit(course, res);
 	});
+};
+
+
+exports.editCourse = (req, res) => {
+	if(req.data && req.data.length) {
+		const forbiddenFields = [
+			'_id',
+			'__v',
+			'num_attendees',
+			'num_inscriptions',
+			'votes',
+			'created_date',
+			'updated_date'
+		];
+		let course = req.data[0];
+		for (let entry in req.body) {
+			if (forbiddenFields.indexOf(entry) === -1){
+				course[entry] = req.body[entry];
+			}
+		}
+		course.updated_date = Date.now();
+		course.save((err) => {
+			if (err) {
+				return handlers.handleQueryError(err, res, 'editCourse');
+			}
+			handlers.handleCreateAndEdit(course, res);
+		});
+	} else {
+		handlers.handle404(res);
+	}
+};
+
+
+exports.findById = (req, res, next) => {
+	if (req.body._id) {
+		const query = Course.find({_id: req.body._id});
+		query.exec((err, course) => {
+			if (err){
+				return handleQueryError(err, res, 'listOldCourses');
+			}
+
+			handlers.handleMiddlewareQuery(course, req, next);
+		})
+	} else {
+		res.status(400).end(JSON.stringify({message: 'No course ID sent'}));
+	}
 };

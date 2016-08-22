@@ -37,6 +37,10 @@ const courseSchema = mongoose.Schema({
 		type: Date,
 		default: Date.now
 	},
+	updated_date: {
+		type: Date,
+		default: Date.now
+	},
 	votes: {
 		type: Number,
 		default: 0

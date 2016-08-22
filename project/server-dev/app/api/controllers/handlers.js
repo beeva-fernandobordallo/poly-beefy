@@ -22,10 +22,25 @@ exports.handleQueryResult = (result, res) => {
 	}
 };
 
-exports.createHandler = (result, res) => {
+exports.handleMiddlewareQuery = (result, req, next) => {
+	req.data = result;
+	next();
+};
+
+exports.handleCreateAndEdit = (result, res) => {
 	let responseObj = {
 		data: result,
 		meta: Date.now()
 	};
 	res.status(200).end(JSON.stringify(responseObj));
+};
+
+exports.handle404 = (res) => {
+	let responseObj = {
+		data: null,
+		message: 'No information found',
+		meta: Date.now(),
+	};
+	res.status(404);
+	res.end(JSON.stringify(responseObj));
 };
