@@ -65,7 +65,7 @@ module.exports = function apiRouteSetup(app, passport) {
 	);
 
 	apiRoutes.get('/auth/failure', function(req, res) {
-		res.render('after-auth', { state: 'failure', user: null, token: null, message: 'Error in Google Auth process' });
+		res.render('after-auth', { state: 'failure', userData: null, token: null, message: 'Error in Google Auth process' });
 	});
 
 	/**
