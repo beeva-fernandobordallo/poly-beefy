@@ -182,7 +182,7 @@ module.exports = function apiRouteSetup(app, passport) {
 	apiRoutes.put('/courses/edit', roleCtrl.isAdmin, courseCtrl.findById, courseCtrl.editCourse);
 
 	// Detele
-	apiRoutes.delete('/courses/delete', roleCtrl.isAdmin, courseCtrl.findById, courseCtrl.deleteCourse);
+	apiRoutes.delete('/courses/delete', roleCtrl.isMaster, courseCtrl.findById, courseCtrl.deleteCourse);
 
 
 	 // Testing route - Send decoded token to user
