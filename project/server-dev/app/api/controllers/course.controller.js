@@ -112,6 +112,22 @@ exports.deleteCourse = (req, res) => {
 };
 
 
+exports.toggleCourseState = (req, res) => {
+	if(req.data && req.data.length) {
+		let course = req.data[0];
+		course.state = !course.state;
+		course.save((err) => {
+			if (err) {
+				return handlers.handleQueryError(err, res, 'editCourse');
+			}
+			handlers.handleCreateAndEdit(course, res);
+		});
+	} else {
+		handlers.handle404(res);
+	}
+};
+
+
 exports.findById = (req, res, next) => {
 	if (req.body._id) {
 		const query = Course.find({_id: req.body._id});

@@ -52,6 +52,10 @@ const courseSchema = mongoose.Schema({
 	num_attendees: {
 		type: Number,
 		default: 0
+	},
+	state: {
+		type: Boolean,
+		default: true	// Course state - Active(true) / Blocked(false)
 	}
 });
 

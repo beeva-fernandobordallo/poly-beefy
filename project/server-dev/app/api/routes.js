@@ -181,6 +181,9 @@ module.exports = function apiRouteSetup(app, passport) {
 	// Update
 	apiRoutes.put('/courses/edit', roleCtrl.isAdmin, courseCtrl.findById, courseCtrl.editCourse);
 
+	// Toggle state - Active / Blocked
+	apiRoutes.put('/courses/toggleState', roleCtrl.isAdmin, courseCtrl.findById, courseCtrl.toggleCourseState)
+
 	// Detele
 	apiRoutes.delete('/courses/delete', roleCtrl.isMaster, courseCtrl.findById, courseCtrl.deleteCourse);
 
