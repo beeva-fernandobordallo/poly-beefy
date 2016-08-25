@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>serv-ajax demo</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+	<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+	<link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+	<link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+	<link rel="import" href="../../paper-input/paper-input.html">
+	<link rel="import" href="../../paper-button/paper-button.html">
+	<link rel="import" href="../serv-ajax.html">
+	<style is="custom-style" include="demo-pages-shared-styles">
+
+	</style>
+</head>
+
+<body>
+	<div class="vertical-section-container centered">
+		<h3>Basic serv-ajax Demo</h3>
+		<demo-snippet>
+			<template is="dom-bind" id="element-demo">
+				<serv-ajax id="my-service"></serv-ajax>
+				<h3>Currently the Demo does not work. TODO: create interested data node</h3>
+				<paper-input label="Url " value="{{url}}"></paper-input>
+				<br>
+				<paper-input label="Method" value="{{method}}" placeholder="Method: GET, POST, PUT, DELETE"></paper-input>
+				<br>
+				<paper-input label="Body" value="{{body}}" placeholder='Input as JSON Object: {"info1":"data info1"}'></paper-input>
+				<br>
+				<paper-input label="Token" value="{{token}}" placeholder="Users access token"></paper-input>
+				<br>
+				<paper-button raised onclick="sendRequest()">Add request to Queue</paper-button>
+				<paper-button raised onclick="send100Request()">Add 100 requests to Queue</paper-button>
+			</template>
+		</demo-snippet>
+	</div>
+	<script>
+	var demoElement = document.querySelector('#element-demo');
+	var send100Request = function(e) {
+		var serviceElement = document.querySelector('#my-service');
+		var req = {
+			url: demoElement.url,
+			method: demoElement.method,
+			body: demoElement.body ? JSON.parse(demoElement.body) : null,
+			token: demoElement.token || null,
+			node: 'demoTemp'
+		};
+
+		serviceElement.request(req);
+
+		demoElement.url = '';
+		demoElement.method = '';
+		demoElement.body = '';
+		demoElement.token = '';
+	}
+	var send100Request = function(e) {
+		var serviceElement = document.querySelector('#my-service');
+		var req = {
+			url: demoElement.url,
+			method: demoElement.method,
+			body: demoElement.body ? JSON.parse(demoElement.body) : null,
+			token: demoElement.token || null,
+			node: 'demoTemp'
+		};
+		for(var i = 0; i < 100; i++){
+			req.url = req.url.substr(0, req.url.length-1) + i;
+			serviceElement.request(req);
+		}
+
+		demoElement.url = '';
+		demoElement.method = '';
+		demoElement.body = '';
+		demoElement.token = '';
+	}
+	</script>
+</body>
+
+</html>

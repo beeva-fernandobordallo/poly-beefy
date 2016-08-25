@@ -1,0 +1,141 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<!--
+`serv-ajax`
+Service element in charge of managing a queue of ajax requests and dispatching data to the interested elements
+
+@demo demo/index.html 
+-->
+<dom-module id="serv-ajax">
+	<template>
+		<iron-ajax
+			id="ajax-element"
+			url="{{url}}"
+			method="{{method}}"
+			body="{{body}}"
+			headers="{{headers}}"
+			loading="{{loading}}"
+			timeout="{{timeout}}"
+			handle-as="json"
+			on-request="_handleRequest"
+			on-response="_handleResponse"
+			on-error="_handleError"></iron-ajax>
+	</template>
+	<script>
+	Polymer({
+
+		is: 'serv-ajax',
+
+		properties: {
+			requestQueue: {
+				type: Array,
+				value: function(){
+					return [];
+				}
+			},
+			pendingCalls: {
+				type: Array,
+				value: function(){
+					return [];
+				}
+			},
+			timeout: {
+				type: Number,
+				value: 10000
+			}
+		},
+
+		observers: [
+			'_newRequestQueued(requestQueue.*)'
+		],
+
+		request(data) {
+			if (data && data instanceof Object) {
+				try {
+					if(!data.url ){
+						throw new Error('A URL endpoint must be specified');
+					}
+					if(!data.node ){
+						throw new Error('A Node Caller must be specified');
+					}
+					const newReq = {
+						url: data.url,
+						method: data.method || 'GET',
+						body: (data.method !== 'GET') ? data.body : null,
+						headers: {
+							"Content-Type": "application/json",
+							"x-access-token": data.token || null
+						},
+						node: data.node
+					};
+					this.push('requestQueue', newReq);
+				} catch (e) {
+					console.warn('Serv-Ajax:: Your ajax request does not have the necessary fields')
+					console.warn(e);
+				}
+			}
+		},
+
+		_handleRequest(req) {
+			const newCall = {
+				id: req.target.method + '-' + req.target.url,
+				node: this.lastRequestNode
+			}
+			this.pendingCalls.push(newCall);
+		},
+
+		_handleResponse(res){
+			const id = res.target.method + '-' + res.target.url;
+			const reqData = this._getRequestData(id);
+			this.pendingCalls.splice(reqData.reqIndex, 1);
+
+			reqData.reqNode._handleResponse({
+				data: res.detail.response,
+				status: res.detail.status
+			});
+		},
+
+		_handleError(e) {
+			const id = e.target.method + '-' + e.target.url;
+			const reqData = this._getRequestData(id);
+			this.pendingCalls.splice(reqData.reqIndex, 1);
+
+			if (e.detail.error.type === 'timeout') {
+				console.warn('Serv-ajax :: Timeout on call');
+			}
+
+			reqData.reqNode._handleError(e.detail.error);
+		},
+
+		_getRequestData(id) {
+			let reqIndex = 0;
+			let reqNode = null;
+			this.pendingCalls.forEach((item, index) => {
+				if(item.id === id){
+					reqIndex = index;
+					reqNode = item.node;
+				}
+			});
+
+			return {
+				reqIndex,
+				reqNode
+			};
+		},
+
+		_newRequestQueued(changeRecord) {
+			if(changeRecord.path === 'requestQueue.splices'){
+				const req = changeRecord.base[0];
+				this.url = req.url;
+				this.method = req.method;
+				this.body = req.body;
+				this.headers = JSON.stringify(req.headers);
+				this.lastRequestNode = req.node;
+
+				this.$["ajax-element"].generateRequest();
+				this.requestQueue.pop();
+			}
+		}
+	});
+	</script>
+</dom-module>

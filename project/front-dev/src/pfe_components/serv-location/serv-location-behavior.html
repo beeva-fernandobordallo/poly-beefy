@@ -13,14 +13,17 @@
 		},
 
 		ready() {
+			// Verify if location-service element exists
+			// If not, create it and append it to the document
 			const locationServiceNode = document.querySelector(`#${this.locationServiceElId}`);
 			if(!locationServiceNode){
 				this.locationServiceNode = document.createElement('serv-location');
 				this.locationServiceNode.setAttribute("id", this.locationServiceElId);
-            	document.body.appendChild(this.locationServiceNode);
+				document.body.appendChild(this.locationServiceNode);
 			} else {
 				this.locationServiceNode = locationServiceNode;
 			}
+			// Add Page & Node reference
 			this.locationServiceNode.addRef({
 				page: this.pageRoute,
 				node: this
