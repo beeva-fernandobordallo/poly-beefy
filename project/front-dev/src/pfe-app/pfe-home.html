@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/serv-location/serv-location-behavior.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <dom-module id="pfe-home">
 	<template>
@@ -9,10 +10,18 @@
 	</template>
 	<script>
 	Polymer({
-
 		is: 'pfe-home',
+		behaviors: [
+			PfeBehaviors.ServLocationBehavior
+		],
 		properties: {
-
+			pageRoute: {
+				type: String,
+				value: '/'
+			}
+		},
+		_pageAccessed(){
+			console.log('I accessed home');
 		}
 	});
 	</script>

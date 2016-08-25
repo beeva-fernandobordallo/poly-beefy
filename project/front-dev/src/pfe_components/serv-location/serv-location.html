@@ -1,0 +1,83 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../app-route/app-location.html">
+<!--
+`<serv-location></serv-location>`
+
+Service element which will observe the URL bar and keep a register of pages interested in receiving notice of them being accessed. Will exist as a Singleton element and will only appear as a dependency of a second element (page-control | page-control-behaviour).
+
+The element with detect changes to the URL and will call the `_pageAccessed` method on the route-linked node in order to send notification of route access to its' endpoint. 
+
+** _NOTE: This element will not take into consideration URL Parameters_
+
+@demo demo/index.html 
+-->
+<dom-module id="serv-location">
+	<template>
+		<app-location route="{{route}}"></app-location>
+	</template>
+	<script>
+	Polymer({
+
+		is: 'serv-location',
+
+		properties: {
+			/**
+			 * Will contain all references to the interested page nodes. Each key is created
+			 * upon each call to `addRef()`
+			 * @type {Object}
+			 */
+			pageMap: {
+				type: Object,
+				value: function(){
+					return {};
+				},
+			},
+
+			/**
+			 * Contains the previous route accessed. Controls double `route` property changes.
+			 * @type {String}
+			 */
+			prevRoute: {
+				type: String
+			}
+		},
+
+		/**
+		 * Observer linked to the route property received from the `app-location`element
+		 * @type {Array}
+		 */
+		observers: [
+			'_routeChange(route)'
+		],
+
+		/**
+		 * Public method called to add page references to the `pageMap` property.
+		 *
+		 * Each call must contain an object parameter with keys:
+		 * - route: String endpoint which defines the page route. Eg. `'/myRoute/subRoutePath'`
+		 * - node: Reference to the page element itself. Usually will be `this` when the method is invoked from the pageElement.
+		 * @param {Object} pageRef Required information to link page route to a specific page element
+		 */
+		addRef(pageRef) {
+			console.log(pageRef);
+			if(typeof pageRef === 'object' && pageRef instanceof Object){
+				this.pageMap[pageRef.page] = pageRef.node;
+				return;
+			}
+			console.warn('Serv-location:: The page reference has to be an object with keys: page & node');
+		},
+
+		/**
+		 * Private method invoked on route changes
+		 * @param  {Object} route Contains all route information obtained by `app-location` element
+		 */
+		_routeChange(route) {
+			// Check we have a reference to the entered page
+			if(this.pageMap[route.path] && this.prevRoute !== route.path){
+				this.prevRoute = route.path;
+				this.pageMap[route.path]._pageAccessed();
+			}
+		}		
+	});
+	</script>
+</dom-module>

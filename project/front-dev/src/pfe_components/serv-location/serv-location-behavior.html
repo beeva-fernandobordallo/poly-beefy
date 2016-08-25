@@ -1,0 +1,34 @@
+<link rel="import" href="serv-location.html">
+
+<script>
+	window.PfeBehaviors = window.PfeBehaviors || {};
+
+	PfeBehaviors.ServLocationBehavior = {
+
+		properties: {
+			locationServiceElId: {
+				type: String,
+				value: 'location-service'
+			}
+		},
+
+		ready() {
+			const locationServiceNode = document.querySelector(`#${this.locationServiceElId}`);
+			if(!locationServiceNode){
+				this.locationServiceNode = document.createElement('serv-location');
+				this.locationServiceNode.setAttribute("id", this.locationServiceElId);
+            	document.body.appendChild(this.locationServiceNode);
+			} else {
+				this.locationServiceNode = locationServiceNode;
+			}
+			this.locationServiceNode.addRef({
+				page: this.pageRoute,
+				node: this
+			});
+			// Call page access on first page creation
+			// NOTE: No matter where we access on first load, the home route will be walked 
+			// through first
+			this._pageAccessed();
+		}
+	}
+</script>

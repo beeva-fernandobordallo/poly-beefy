@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/serv-location/serv-location-behavior.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <dom-module id="pfe-catalogo">
 	<template>
@@ -10,8 +11,17 @@
 	<script>
 	Polymer({
 		is: 'pfe-catalogo',
+		behaviors: [
+			PfeBehaviors.ServLocationBehavior
+		],
 		properties: {
-
+			pageRoute: {
+				type: String,
+				value: '/catalogo'
+			}
+		},
+		_pageAccessed(){
+			console.log('I accessed catalogo');
 		}
 	});
 	</script>
