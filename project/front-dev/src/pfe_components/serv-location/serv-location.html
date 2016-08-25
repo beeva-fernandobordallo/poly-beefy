@@ -1,5 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../app-route/app-location.html">
+<link rel="import" href="../iron-location/iron-location.html">
 <!--
 `<serv-location></serv-location>`
 
@@ -13,7 +13,7 @@ The element with detect changes to the URL and will call the `_pageAccessed` met
 -->
 <dom-module id="serv-location">
 	<template>
-		<app-location route="{{route}}"></app-location>
+		<iron-location path="{{path}}"></iron-location>
 	</template>
 	<script>
 	Polymer({
@@ -47,7 +47,7 @@ The element with detect changes to the URL and will call the `_pageAccessed` met
 		 * @type {Array}
 		 */
 		observers: [
-			'_routeChange(route)'
+			'_routeChange(path)'
 		],
 
 		/**
@@ -71,11 +71,11 @@ The element with detect changes to the URL and will call the `_pageAccessed` met
 		 * Private method invoked on route changes
 		 * @param  {Object} route Contains all route information obtained by `app-location` element
 		 */
-		_routeChange(route) {
+		_routeChange(path) {
 			// Check we have a reference to the entered page
-			if(this.pageMap[route.path] && this.prevRoute !== route.path){
-				this.prevRoute = route.path;
-				this.pageMap[route.path]._pageAccessed();
+			if(this.pageMap[path] && this.prevRoute !== path){
+				this.prevRoute = path;
+				this.pageMap[path]._pageAccessed();
 			}
 		}		
 	});

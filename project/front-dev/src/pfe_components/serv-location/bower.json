@@ -1,10 +1,10 @@
 {
   "name": "serv-location",
-  "description": "Service element which will observe the URL bar and keep a register of pages interested in receiving notice of them being accessed. Will exist as a Singleton element and will only appear as a dependency of a second element (page-control | page-control-behaviour)",
+  "description": "Service element which will observe the URL bar and keep a register of pages interested in receiving notice of them being accessed. Use behaviour to implement its use",
   "main": "serv-location.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
-    "app-route": "PolymerElements/app-route#^0.9.2"
+    "iron-location": "PolymerElements/iron-location#^0.8.8"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
