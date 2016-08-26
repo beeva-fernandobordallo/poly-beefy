@@ -1,34 +1,57 @@
 <link rel="import" href="../polymer/polymer.html">
-
+<link rel="import" href="../serv-ajax/serv-ajax.html">
 <!--
 `pfe-xhr`
 Data management element in direct connection with the ajax service element (serv-ajax).
 
 @demo demo/index.html 
 -->
-
 <dom-module id="pfe-xhr">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]</h2>
-  </template>
+	<script>
+	Polymer({
 
-  <script>
-    Polymer({
+		is: 'pfe-xhr',
 
-      is: 'pfe-xhr',
+		properties: {
+			ajaxServiceElId: {
+				type: String,
+				value: 'ajax-service'
+			},
 
-      properties: {
-        prop1: {
-          type: String,
-          value: 'pfe-xhr',
-        },
-      },
+			data: {
+				type: Object,
+				notify: true
+			}
+		},
 
-    });
-  </script>
+		ready() {
+			// Verify if ajax-service element exists
+			// If not, create it and append it to the document
+			const ajaxServiceNode = document.querySelector(`#${this.ajaxServiceElId}`);
+			if (!ajaxServiceNode) {
+				this.ajaxServiceNode = document.createElement('serv-ajax');
+				this.ajaxServiceNode.setAttribute("id", this.ajaxServiceElId);
+				document.body.appendChild(this.ajaxServiceNode);
+			} else {
+				this.ajaxServiceNode = ajaxServiceNode;
+			}
+		},
+
+		xhr(req) {
+			this.ajaxServiceNode.request(req);
+			console.log(req);
+		},
+
+		_handleResponse(res) {
+			this.fire('data-response', {status: res.status});
+			console.log(res);
+		},
+
+		_handleError(err) {
+			// TODO
+			console.log(err);
+		}
+
+	});
+	</script>
 </dom-module>

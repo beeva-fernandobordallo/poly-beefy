@@ -78,6 +78,7 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 		 * @param  {Object} data Request data object
 		 */
 		request(data) {
+			let newReq = {};
 			if (data && data instanceof Object) {
 				try {
 					if(!data.url ){
@@ -86,7 +87,7 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 					if(!data.node ){
 						throw new Error('A Node Caller must be specified');
 					}
-					const newReq = {
+					newReq = {
 						url: data.url,
 						method: data.method || 'GET',
 						body: (data.method !== 'GET') ? data.body : null,
@@ -98,7 +99,7 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 					};
 				} catch (e) {
 					console.warn('Serv-Ajax:: Your ajax request does not have the necessary fields')
-					console.warn(e);
+					return console.warn(e);
 				}
 
 				this.push('requestQueue', newReq);
