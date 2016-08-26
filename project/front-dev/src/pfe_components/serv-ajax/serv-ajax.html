@@ -27,18 +27,34 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 		is: 'serv-ajax',
 
 		properties: {
+			/**
+			 * Queued request Array. Entry point for all requests received by the service
+			 * element
+			 * @type {Array}
+			 */
 			requestQueue: {
 				type: Array,
 				value: function(){
 					return [];
 				}
 			},
+
+			/**
+			 * Once a request has been passed to the iron-ajax element we register a refernce
+			 * to it in this Array
+			 * @type {Array}
+			 */
 			pendingCalls: {
 				type: Array,
 				value: function(){
 					return [];
 				}
 			},
+
+			/**
+			 * Timeout setup for the iron-ajax element (in ms)
+			 * @type {Number}
+			 */
 			timeout: {
 				type: Number,
 				value: 10000
@@ -49,6 +65,18 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 			'_newRequestQueued(requestQueue.*)'
 		],
 
+		/**
+		 * Public request creation method. Expects an object with the following structure:
+		 * - url: (Required) endpoint to which the request will be made
+		 * - node: (Required) reference to the element which made the call. Usually will be `this`
+		 * - method: (Optional) GET by default. Accepts: GET, PUT, POST, DELETE
+		 * - body: (Optional) Request body to be sent to the server. All requests will be sent with 'Content-Type' = 'application/json'!!!
+		 * - token: (Optional) If the request is private, the token will be sent as 'x-access-token' request Header
+		 *
+		 * ALL OBJECT KEY-VALUES ARE TO BE PASSED IN AS STRINGS
+		 * 
+		 * @param  {Object} data Request data object
+		 */
 		request(data) {
 			if (data && data instanceof Object) {
 				try {
@@ -68,14 +96,19 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 						},
 						node: data.node
 					};
-					this.push('requestQueue', newReq);
 				} catch (e) {
 					console.warn('Serv-Ajax:: Your ajax request does not have the necessary fields')
 					console.warn(e);
 				}
+
+				this.push('requestQueue', newReq);
 			}
 		},
 
+		/**
+		 * Request creation handler. Registers each request reference in `pendingCalls`
+		 * @param  {Object} req Request object
+		 */
 		_handleRequest(req) {
 			const newCall = {
 				id: req.target.method + '-' + req.target.url,
@@ -84,17 +117,28 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 			this.pendingCalls.push(newCall);
 		},
 
+		/**
+		 * Response handler. Finds pending request reference and invokes the petionary node
+		 * through an expected method: `_handleResponse` on the node itself
+		 * @param  {Object} res Response object
+		 */
 		_handleResponse(res){
 			const id = res.target.method + '-' + res.target.url;
 			const reqData = this._getRequestData(id);
 			this.pendingCalls.splice(reqData.reqIndex, 1);
 
 			reqData.reqNode._handleResponse({
+				reqId: id,
 				data: res.detail.response,
 				status: res.detail.status
 			});
 		},
 
+		/**
+		 * Error handler. Finds pending request reference and invokes the petionary node
+		 * through an expected method: `_handleError` on the node itself
+		 * @param  {Object} e Error object
+		 */
 		_handleError(e) {
 			const id = e.target.method + '-' + e.target.url;
 			const reqData = this._getRequestData(id);
@@ -104,9 +148,18 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 				console.warn('Serv-ajax :: Timeout on call');
 			}
 
-			reqData.reqNode._handleError(e.detail.error);
+			reqData.reqNode._handleError({
+				reqId: id,
+				error: e.detail.error
+			});
 		},
 
+		/**
+		 * Used to search the `pendingCalls` Array for a specific request
+		 * @param  {String} id String identifier which consists of: 'method'-'endpoint'
+		 * @return {Object}    Object containing request information: ArrayPosition and 
+		 * Requesting node reference
+		 */
 		_getRequestData(id) {
 			let reqIndex = 0;
 			let reqNode = null;
@@ -123,6 +176,11 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 			};
 		},
 
+		/**
+		 * Method called by queue observer. Builds the request, generates it and dequeues
+		 * the launched request
+		 * @param  {Object} changeRecord Change Record received from observer
+		 */
 		_newRequestQueued(changeRecord) {
 			if(changeRecord.path === 'requestQueue.splices'){
 				const req = changeRecord.base[0];
