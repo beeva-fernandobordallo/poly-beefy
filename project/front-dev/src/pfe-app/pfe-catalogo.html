@@ -1,9 +1,11 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/serv-location/serv-location-behavior.html">
+<link rel="import" href="../../bower_components/pfe-xhr/pfe-xhr.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <dom-module id="pfe-catalogo">
 	<template>
 		<style include="iron-flex iron-flex-alignment"></style>
+		<pfe-xhr id="xhr-element" on-data="_xhrDataReceived" on-error="_xhrError"></pfe-xhr>
 		<div class="layout vertical center">
 			<h1>Catálogo</h1>
 		</div>
@@ -18,10 +20,33 @@
 			pageRoute: {
 				type: String,
 				value: '/catalogo'
+			},
+
+			courses: {
+				type: Array,
+				value: function(){
+					return [];
+				}
+			},
+
+			token: {
+				type: String
 			}
 		},
 		_pageAccessed(){
-			console.log('I accessed catalogo');
+			// console.log('I accessed catalogo');
+			if(this.courses.length < 1){
+				this.$["xhr-element"].xhr({
+					url: '/api/courses',
+					token: this.token || null
+				});
+			}
+		},
+		_xhrDataReceived(res) {
+			console.log(res.detail.data);
+		},
+		_xhrError(err) {
+			console.log(err.detail);
 		}
 	});
 	</script>

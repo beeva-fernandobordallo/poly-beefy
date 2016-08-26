@@ -59,7 +59,7 @@ The element with detect changes to the URL and will call the `_pageAccessed` met
 		 * @param {Object} pageRef Required information to link page route to a specific page element
 		 */
 		addRef(pageRef) {
-			console.log(pageRef);
+			// console.log(pageRef);
 			if(typeof pageRef === 'object' && pageRef instanceof Object){
 				this.pageMap[pageRef.page] = pageRef.node;
 				return;

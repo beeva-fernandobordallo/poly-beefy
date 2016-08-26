@@ -1,29 +1,65 @@
 <!doctype html>
 <html>
-  <head>
-    <title>pfe-xhr demo</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+<head>
+	<title>Element Demo: pfe-xhr</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+	<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+	<link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+	<link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+	<link rel="import" href="../../paper-button/paper-button.html">
+	<link rel="import" href="../pfe-xhr.html">
+	<style is="custom-style" include="demo-pages-shared-styles">
 
-    <link rel="import" href="../pfe-xhr.html">
+	</style>
+</head>
 
-    <style is="custom-style" include="demo-pages-shared-styles">
-    </style>
-  </head>
-  <body>
+<body>
+	<div class="vertical-section-container centered">
+		<h3>Basic &lt;pfe-xhr&gt; Demo</h3>
+		<demo-snippet>
+			<template is="dom-bind" id="demo-template">
+				<pfe-xhr id="xhrOne" data="{{dataModelOne}}"></pfe-xhr>
+				<pfe-xhr id="xhrTwo" data="{{dataModelTwo}}"></pfe-xhr>
+				<pfe-xhr id="xhrThree" data="{{dataModelThree}}"></pfe-xhr>
+				<pfe-xhr id="xhrFour" data="{{dataModelFour}}"></pfe-xhr>
+				<paper-button raised onclick="generate()">Generate Four Request!</paper-button>
+			</template>
+		</demo-snippet>
+	</div>
+	<script>
+		var demoEl = document.querySelector('#demo-template');
 
-    <div class="vertical-section-container centered">
-      <h3>Basic pfe-xhr Demo</h3>
-      <demo-snippet>
-        <template>
-          <pfe-xhr></pfe-xhr>
-        </template>
-      </demo-snippet>
-    </div>
+		var generate = function() {
+			var xhrOne = document.querySelector('#xhrOne');
+			var xhrTwo = document.querySelector('#xhrTwo');
+			var xhrThree = document.querySelector('#xhrThree');
+			var xhrFour = document.querySelector('#xhrFour');
 
-  </body>
+			xhrOne.xhr({url: 'https://baconipsum.com/api/?type=all-meat&paras=2&start-with-lorem=1'});
+			xhrTwo.xhr({url: 'https://baconipsum.com/api/?type=all-meat&paras=2&start-with-lorem=2'});
+			xhrThree.xhr({url: 'https://baconipsum.com/api/?type=all-meat&paras=2&start-with-lorem=3'});
+			xhrFour.xhr({url: 'https://baconipsum.com/api/?type=all-meat&paras=2&start-with-lorem=4'});
+			xhrOne.addEventListener('data', dataOne);
+			xhrTwo.addEventListener('data', dataTwo);
+			xhrThree.addEventListener('data', dataThree);
+			xhrFour.addEventListener('data', dataFour);
+		};
+
+		var dataOne = function(data) {
+			console.log('Data One received response');
+		}
+		var dataTwo = function(data) {
+			console.log('Data Two received response');
+		}
+		var dataThree = function(data) {
+			console.log('Data Three received response');
+		}
+		var dataFour = function(data) {
+			console.log('Data Four received response');
+		}
+	</script>
+</body>
+
 </html>

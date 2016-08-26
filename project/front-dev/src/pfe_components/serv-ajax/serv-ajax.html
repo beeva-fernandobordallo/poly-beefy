@@ -112,7 +112,7 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 		 */
 		_handleRequest(req) {
 			const newCall = {
-				id: req.target.method + '-' + req.target.url,
+				id: req.target.url,
 				node: this.lastRequestNode
 			}
 			this.pendingCalls.push(newCall);
@@ -124,7 +124,7 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 		 * @param  {Object} res Response object
 		 */
 		_handleResponse(res){
-			const id = res.target.method + '-' + res.target.url;
+			const id = res.detail.url;
 			const reqData = this._getRequestData(id);
 			this.pendingCalls.splice(reqData.reqIndex, 1);
 
@@ -141,7 +141,7 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 		 * @param  {Object} e Error object
 		 */
 		_handleError(e) {
-			const id = e.target.method + '-' + e.target.url;
+			const id = e.detail.request.url;
 			const reqData = this._getRequestData(id);
 			this.pendingCalls.splice(reqData.reqIndex, 1);
 
@@ -151,7 +151,10 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 
 			reqData.reqNode._handleError({
 				reqId: id,
-				error: e.detail.error
+				error: e.detail.error,
+				message: e.detail.request.__data__.response.message || null,
+				status: e.detail.request.status,
+				statusText: e.detail.request.statusText
 			});
 		},
 
@@ -188,7 +191,7 @@ Service element in charge of managing a queue of ajax requests and dispatching d
 				this.url = req.url;
 				this.method = req.method;
 				this.body = req.body;
-				this.headers = JSON.stringify(req.headers);
+				this.headers = req.headers;
 				this.lastRequestNode = req.node;
 
 				this.$["ajax-element"].generateRequest();

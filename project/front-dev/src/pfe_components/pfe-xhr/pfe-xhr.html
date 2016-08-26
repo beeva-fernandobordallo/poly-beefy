@@ -16,11 +16,6 @@ Data management element in direct connection with the ajax service element (serv
 			ajaxServiceElId: {
 				type: String,
 				value: 'ajax-service'
-			},
-
-			data: {
-				type: Object,
-				notify: true
 			}
 		},
 
@@ -38,18 +33,16 @@ Data management element in direct connection with the ajax service element (serv
 		},
 
 		xhr(req) {
+			req.node = this;
 			this.ajaxServiceNode.request(req);
-			console.log(req);
 		},
 
 		_handleResponse(res) {
-			this.fire('data-response', {status: res.status});
-			console.log(res);
+			this.fire('data', res);
 		},
 
 		_handleError(err) {
-			// TODO
-			console.log(err);
+			this.fire('error', err);
 		}
 
 	});
