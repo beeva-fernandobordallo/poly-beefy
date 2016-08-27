@@ -1,0 +1,196 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/serv-location/serv-location-behavior.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/pfe-xhr/pfe-xhr.html">
+<dom-module id="pfe-admin">
+	<template>
+		<style include="iron-flex iron-flex-alignment"></style>
+		<style>
+			.admin-subtitle{
+				margin-left: 20px;
+				margin-right: 20px;
+				padding: 5px;
+			}
+
+			.admin-block{
+				margin-bottom: 10px;
+				margin-left: 1%;
+				margin-right: 1%;
+				padding: 10px;
+				width: 100%;
+			}
+
+			#create-dialog{
+				width:80%;
+			}
+
+			paper-icon-button{
+				--paper-icon-button-ink-color: green;
+			}
+
+			.error{
+				color: red;
+			}
+			
+			/* Landscape phones and down */
+			@media (max-width: 480px) {
+			
+			}
+			
+			/* Landscape phone to portrait tablet */
+			@media (min-width: 767px) {
+				.admin-block{
+					width: 44%;
+				}
+			}
+
+			/* Portrait tablet to landscape and desktop  - and (max-width: 979px) */
+			@media (min-width: 970px) {
+				.admin-block{
+					width: 28%;
+				}
+			}
+			
+		</style>
+		<pfe-xhr id="xhr-element" on-data="_xhrDataReceived" on-error="_xhrError"></pfe-xhr>
+		<div class="layout vertical center">
+			<h1>Adminstración general</h1>
+		</div>
+		<h3 class="admin-subtitle">Gestión de Cursos</h3>
+		<div id="course-admin-block" class="layout horizontal wrap">
+			<paper-material elevation="2" class="admin-block layout horizontal center" on-tap="_openCreateDialog">
+				<paper-ripple></paper-ripple>
+				<iron-icon icon="add"></iron-icon>
+				<span class="flex"></span>
+				Añadir Nuevo Curso
+				<span class="flex"></span>
+			</paper-material>
+			<paper-material elevation="2" class="admin-block layout horizontal center">
+				<paper-ripple></paper-ripple>
+				<iron-icon icon="assignment"></iron-icon>
+				<span class="flex"></span>
+				Listar Cursos Activos
+				<span class="flex"></span>
+			</paper-material>
+			<paper-material elevation="2" class="admin-block layout horizontal center">
+				<paper-ripple></paper-ripple>
+				<iron-icon icon="bookmark-border"></iron-icon>
+				<span class="flex"></span>
+				Peticiones Pendientes
+				<span class="flex"></span>
+			</paper-material>
+		</div>
+
+		<paper-dialog id="create-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+			<div class="layout horizontal center">
+				<h2>Añadir Curso</h2>
+				<span class="flex"></span>
+				<template is="dom-if" if="{{createError}}">
+					<span class="error">¡Error en la creación!</span>
+				</template>
+			</div>
+			<paper-dialog-scrollable>
+				<paper-input id="create-name" label="Nombre" autofocus></paper-input>
+				<paper-input id="create-entity" label="Entidad" placeholder="¿Que empresa lo imparte?"></paper-input>
+				<paper-input id="create-url" label="Url"></paper-input>
+				<paper-input id="create-cost" label="Precio" type="number">
+					<div suffix>€</div>
+				</paper-input>
+				<paper-input id="create-limit" label="Limite de Alumnos" type="number" placeholder="0 = Sin limite; >0 = Limitado"></paper-input>
+				<paper-input id="create-date" label="Fecha" type="date"></paper-input>
+				<paper-textarea id="create-description" label="Description" char-counter	></paper-textarea>
+			</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss on-tap="_clearCourseCreateForm">Cancelar</paper-button>
+				<paper-button raised autofocus on-tap="_saveNewCourse">Guardar <iron-icon icon="check"></iron-icon></paper-button>
+			</div>
+		</paper-dialog>
+
+		<paper-toast id="admin-toast" text="{{toastMsg}}"></paper-toast>
+	</template>
+	<script>
+	Polymer({
+		is: 'pfe-admin',
+		behaviors: [
+			PfeBehaviors.ServLocationBehavior
+		],
+		properties: {
+			pageRoute: {
+				type: String, value: '/admin'
+
+			},
+
+			token: {
+				type: String
+			}
+		},
+		_pageAccessed() {
+			// console.log('I accessed admin');
+		},
+
+		_openCreateDialog() {
+			this.createError = false;
+			this.$["create-dialog"].open();
+		},
+
+		_saveNewCourse() {
+			// Format date
+			const tempDate = new Date( this.$["create-date"].value.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3") ).getTime();
+
+			const courseData = {
+				name: this.$["create-name"].value,
+				entity: this.$["create-entity"].value,
+				url: this.$["create-url"].value,
+				cost: this.$["create-cost"].value,
+				description: this.$["create-description"].value,
+				inscription_limit: this.$["create-limit"].value || 0,
+				date: tempDate,
+
+			}
+
+			this.$["xhr-element"].xhr({
+					url: '/api/courses/create',
+					method: 'POST',
+					body: courseData,
+					token: this.token || null
+				});
+		},
+
+		_clearCourseCreateForm() {
+			// Clear Creation Dialog form
+			this.$["create-name"].value = '';
+			this.$["create-entity"].value = '';
+			this.$["create-url"].value = '';
+			this.$["create-cost"].value = '';
+			this.$["create-description"].value = '';
+			this.$["create-date"].value = '';
+		},
+
+		_xhrDataReceived(res) {
+			if(res.detail.reqId === '/api/courses/create'){
+				this._clearCourseCreateForm();
+				this.$["create-dialog"].close();
+				this.toastMsg = "Curso creado correctamente.";
+				this.$["admin-toast"].open();
+			}
+			console.log(res);
+		},
+
+		_xhrError(err) {
+			if(err.detail.reqId === '/api/courses/create'){
+				this.createError = true;
+			}
+			console.log(err);
+		}
+	});
+	</script>
+</dom-module>

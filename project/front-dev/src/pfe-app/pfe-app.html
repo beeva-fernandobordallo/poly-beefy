@@ -132,6 +132,15 @@
 								Buzón
 								<span class="flex"></span>
 							</paper-item></a>
+							<template is="dom-if" if="{{admin}}">
+								<hr>
+								<a href="/admin"><paper-item>
+									<iron-icon icon="build"></iron-icon>
+									<span class="flex"></span>
+									Administración
+									<span class="flex"></span>
+								</paper-item></a>
+							</template>
 							<hr>
 							<paper-item on-tap="logout">
 								<iron-icon icon="lock"></iron-icon>
@@ -165,6 +174,11 @@
 							<section data-route="buzon">
 								<pfe-buzon token="[[token]]"></pfe-buzon>
 							</section>
+							<template is="dom-if" if="{{admin}}">
+								<section data-route="admin">
+									<pfe-admin token="[[token]]"></pfe-admin>
+								</section>
+							</template>
 						</iron-pages>
 					</div>
 				</paper-header-panel>
@@ -196,7 +210,8 @@
 						'/',
 						'catalogo',
 						'mis-cursos',
-						'buzon'
+						'buzon',
+						'admin'
 					];
 				}
 			},
@@ -208,7 +223,8 @@
 						'': 'BEE an Expert - Formación Externa',
 						'catalogo': 'Catálogo de Cursos / Certificaciones',
 						'mis-cursos': 'Portfolio Personal',
-						'buzon': 'Buzón PFE'
+						'buzon': 'Buzón PFE',
+						'admin': 'Administración'
 					};
 				}
 			}
@@ -244,8 +260,15 @@
 		_computeUserData: function(user, token) {
 			if (user && token) {
 				this.userActive = true;
+				this._userRole();
 			} else {
 				this.userActive = false;
+			}
+		},
+
+		_userRole(){
+			if(this.user.role && this.user.role.indexOf('admin') !== -1){
+				this.admin = true;
 			}
 		},
 
