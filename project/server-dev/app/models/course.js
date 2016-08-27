@@ -54,8 +54,8 @@ const courseSchema = mongoose.Schema({
 		default: 0
 	},
 	state: {
-		type: Boolean,
-		default: true	// Course state - Active(true) / Blocked(false)
+		type: String,
+		default: 'draft'	// Course state - draft - active - blocked
 	}
 });
 

@@ -16,7 +16,7 @@ exports.listAllCourses = (req, res) => {
 
 
 exports.listActiveCourses = (req, res) => {
-	const query = Course.find({ date: { $gt: Date.now() }});
+	const query = Course.find({ date: { $gt: Date.now() }, state: 'active'});
 	query.exec((err, courses) => {
 		if (err){
 			return handleQueryError(err, res, 'listActiveCourses');
@@ -28,7 +28,7 @@ exports.listActiveCourses = (req, res) => {
 
 
 exports.listOldCourses = (req, res) => {
-	const query = Course.find({ date: { $lt: Date.now() }});
+	const query = Course.find({ date: { $lt: Date.now() }, state: 'active'});
 	query.exec((err, courses) => {
 		if (err){
 			return handleQueryError(err, res, 'listOldCourses');
@@ -112,13 +112,28 @@ exports.deleteCourse = (req, res) => {
 };
 
 
-exports.toggleCourseState = (req, res) => {
+exports.activateCourse = (req, res) => {
 	if(req.data && req.data.length) {
 		let course = req.data[0];
-		course.state = !course.state;
+		course.state = 'active';
 		course.save((err) => {
 			if (err) {
-				return handlers.handleQueryError(err, res, 'editCourse');
+				return handlers.handleQueryError(err, res, 'activateCourse');
+			}
+			handlers.handleCreateAndEdit(course, res);
+		});
+	} else {
+		handlers.handle404(res);
+	}
+};
+
+exports.blockCourse = (req, res) => {
+	if(req.data && req.data.length) {
+		let course = req.data[0];
+		course.state = 'blocked';
+		course.save((err) => {
+			if (err) {
+				return handlers.handleQueryError(err, res, 'blockCourse');
 			}
 			handlers.handleCreateAndEdit(course, res);
 		});
