@@ -7,6 +7,7 @@
 <link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
@@ -37,6 +38,15 @@
 				--paper-icon-button-ink-color: green;
 			}
 
+			paper-fab {
+				--paper-fab-background: red;
+				--paper-fab: {
+					position: absolute;
+					bottom: 20px;
+					right: 20px;
+				};
+			}
+
 			.error{
 				color: red;
 			}
@@ -63,9 +73,8 @@
 		</style>
 		<pfe-xhr id="xhr-element" on-data="_xhrDataReceived" on-error="_xhrError"></pfe-xhr>
 		<div class="layout vertical center">
-			<h1>Adminstración general</h1>
+			<h1>Gestión de Cursos</h1>
 		</div>
-		<h3 class="admin-subtitle">Gestión de Cursos</h3>
 		<div id="course-admin-block" class="layout horizontal wrap">
 			<paper-material elevation="2" class="admin-block layout horizontal center" on-tap="_openCreateDialog">
 				<paper-ripple></paper-ripple>
@@ -89,6 +98,7 @@
 				<span class="flex"></span>
 			</paper-material>
 		</div>
+		<paper-fab icon="add"></paper-fab>
 
 		<paper-dialog id="create-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
 			<div class="layout horizontal center">
@@ -135,6 +145,11 @@
 		},
 		_pageAccessed() {
 			// console.log('I accessed admin');
+			this.$["xhr-element"].xhr({
+				url: '/api/courses',
+				method: 'GET',
+				token: this.token || null
+			});
 		},
 
 		_openCreateDialog() {
@@ -158,11 +173,11 @@
 			}
 
 			this.$["xhr-element"].xhr({
-					url: '/api/courses/create',
-					method: 'POST',
-					body: courseData,
-					token: this.token || null
-				});
+				url: '/api/courses/create',
+				method: 'POST',
+				body: courseData,
+				token: this.token || null
+			});
 		},
 
 		_clearCourseCreateForm() {
@@ -181,7 +196,10 @@
 				this.$["create-dialog"].close();
 				this.toastMsg = "Curso creado correctamente.";
 				this.$["admin-toast"].open();
+			} else if (res.detail.reqId === '/api/courses'){
+				this.courses = res.detail.data.data;
 			}
+			console.log(this.courses);
 			console.log(res);
 		},
 
