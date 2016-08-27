@@ -41,7 +41,7 @@ exports.adminUser = function(req, res, next){
 			adminUser.google.id = 'admin_user';
 			adminUser.google.displayName = 'Admin User';
 			adminUser.google.email = 'pfe-admin@beeva.com';
-			adminUser.role = 'admin';
+			adminUser.role = ['admin'];
 			// save our user to the database
 			adminUser.save((err) => {
 				if (err) {
@@ -69,7 +69,7 @@ exports.financeUser = function(req, res, next){
 			financeUser.google.id = 'finance_user';
 			financeUser.google.displayName = 'Finance User';
 			financeUser.google.email = 'pfe-finance@beeva.com';
-			financeUser.role = 'financial';
+			financeUser.role = ['financial'];
 			// save our user to the database
 			financeUser.save((err) => {
 				if (err) {
@@ -97,7 +97,7 @@ exports.webmasterUser = function(req, res, next){
 			webmasterUser.google.id = 'master_user';
 			webmasterUser.google.displayName = 'Master User';
 			webmasterUser.google.email = 'pfe-master@beeva.com';
-			webmasterUser.role = 'webmaster';
+			webmasterUser.role = ['webmaster'];
 			// save our user to the database
 			webmasterUser.save((err) => {
 				if (err) {

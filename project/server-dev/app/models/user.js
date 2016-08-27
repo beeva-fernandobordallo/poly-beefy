@@ -16,11 +16,12 @@ const userSchema = mongoose.Schema({
 		fullProfile: Object
 	},
 	courses: {
-		type: Array // Should contain ID, Name and Date
+		type: Array,
+		default: [] // Should contain ID, Name and Date
 	},
 	role: {
-		type: String,
-		default: 'user' // user - admin - webmaster - financial
+		type: Array,
+		default: [] // empty - admin - webmaster - financial
 	}
 });
 
