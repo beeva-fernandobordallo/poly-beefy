@@ -135,7 +135,7 @@
 							</paper-item></a>
 							<template is="dom-if" if="{{admin}}">
 								<hr>
-								<a href="/admin"><paper-item>
+								<a href="/admin-courses"><paper-item>
 									<iron-icon icon="build"></iron-icon>
 									<span class="flex"></span>
 									Administrar Cursos
@@ -176,8 +176,8 @@
 								<pfe-buzon token="[[token]]"></pfe-buzon>
 							</section>
 							<template is="dom-if" if="{{admin}}">
-								<section data-route="admin">
-									<pfe-admin token="[[token]]"></pfe-admin>
+								<section data-route="admin-courses">
+									<pfe-admin-courses token="[[token]]"></pfe-admin-courses>
 								</section>
 							</template>
 						</iron-pages>
@@ -215,7 +215,7 @@
 						'catalogo',
 						'mis-cursos',
 						'buzon',
-						'admin'
+						'admin-courses'
 					];
 				}
 			},
@@ -228,7 +228,7 @@
 						'catalogo': 'Catálogo de Cursos / Certificaciones',
 						'mis-cursos': 'Portfolio Personal',
 						'buzon': 'Buzón PFE',
-						'admin': 'Administrar Cursos'
+						'admin-courses': 'Administrar Cursos'
 					};
 				}
 			}
