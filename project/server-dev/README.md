@@ -16,5 +16,3 @@ En el primero de los casos basta con lanzar:
 Para trabajar en desarrollo, lanzar:
 
 `NODE_ENV=dev node server`
-
-A nivel interno, la aplicación de servidor considerará el primer parámetro pasado como el entorno de trabajo (en este caso, `dev`). Esto facilitará en gran medida el desarrollo del front end.
