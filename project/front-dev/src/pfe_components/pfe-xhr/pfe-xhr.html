@@ -42,7 +42,11 @@ Data management element in direct connection with the ajax service element (serv
 		},
 
 		_handleError(err) {
-			this.fire('error', err);
+			if (err.status === 401 && err.message === 'Bad token') {
+				this.fire('logout');
+			} else {
+				this.fire('error', err);
+			}
 		}
 
 	});

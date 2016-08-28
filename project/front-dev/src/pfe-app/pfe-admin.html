@@ -1,8 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/serv-location/serv-location-behavior.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
@@ -41,7 +39,7 @@
 			paper-fab {
 				--paper-fab-background: red;
 				--paper-fab: {
-					position: absolute;
+					position: fixed;
 					bottom: 20px;
 					right: 20px;
 				};
@@ -75,30 +73,13 @@
 		<div class="layout vertical center">
 			<h1>Gestión de Cursos</h1>
 		</div>
-		<div id="course-admin-block" class="layout horizontal wrap">
-			<paper-material elevation="2" class="admin-block layout horizontal center" on-tap="_openCreateDialog">
-				<paper-ripple></paper-ripple>
-				<iron-icon icon="add"></iron-icon>
-				<span class="flex"></span>
-				Añadir Nuevo Curso
-				<span class="flex"></span>
-			</paper-material>
-			<paper-material elevation="2" class="admin-block layout horizontal center">
-				<paper-ripple></paper-ripple>
-				<iron-icon icon="assignment"></iron-icon>
-				<span class="flex"></span>
-				Listar Cursos Activos
-				<span class="flex"></span>
-			</paper-material>
-			<paper-material elevation="2" class="admin-block layout horizontal center">
-				<paper-ripple></paper-ripple>
-				<iron-icon icon="bookmark-border"></iron-icon>
-				<span class="flex"></span>
-				Peticiones Pendientes
-				<span class="flex"></span>
-			</paper-material>
+		<div id="course-admin-block" class="layout vertical">
+			<template is="dom-repeat" items="{{drafts}}">
+				<p>Course name: <span>{{item.name}}</span></p>
+				<p>Course description: <span>{{item.description}}</span></p>
+			</template>
 		</div>
-		<paper-fab icon="add"></paper-fab>
+		<paper-fab icon="add" on-tap="_openCreateDialog"></paper-fab>
 
 		<paper-dialog id="create-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
 			<div class="layout horizontal center">
@@ -139,17 +120,51 @@
 
 			},
 
+			courses: {
+				type: Array,
+				value: function() {
+					return [];
+				}
+			},
+
+			drafts: {
+				type: Array,
+				value: function() {
+					return [];
+				}
+			},
+
+			active: {
+				type: Array,
+				value: function() {
+					return [];
+				}
+			},
+
+			blocked: {
+				type: Array,
+				value: function() {
+					return [];
+				}
+			},
+
 			token: {
 				type: String
 			}
 		},
+
+		observers: [
+			'_coursesChanged(courses.*)'
+		],
 		_pageAccessed() {
 			// console.log('I accessed admin');
-			this.$["xhr-element"].xhr({
-				url: '/api/courses',
-				method: 'GET',
-				token: this.token || null
-			});
+			if (!this.courses.length){
+				this.$["xhr-element"].xhr({
+					url: '/api/courses',
+					method: 'GET',
+					token: this.token || null
+				});
+			}
 		},
 
 		_openCreateDialog() {
@@ -192,15 +207,13 @@
 
 		_xhrDataReceived(res) {
 			if(res.detail.reqId === '/api/courses/create'){
+				this.push('courses', res.detail.data.data);
 				this._clearCourseCreateForm();
 				this.$["create-dialog"].close();
-				this.toastMsg = "Curso creado correctamente.";
-				this.$["admin-toast"].open();
+				this.fire('new-toast', {message: 'Curso creado correctamente.'});
 			} else if (res.detail.reqId === '/api/courses'){
 				this.courses = res.detail.data.data;
 			}
-			console.log(this.courses);
-			console.log(res);
 		},
 
 		_xhrError(err) {
@@ -208,6 +221,44 @@
 				this.createError = true;
 			}
 			console.log(err);
+		},
+
+		_coursesChanged(changeRecord) {
+			if (changeRecord.path === 'courses') {
+				// Deal with initial course data crunch
+				this._sortAllCourses();
+
+			} else if (changeRecord.path === 'courses.splices') {
+				// A new course has been added or deleted
+
+				if (changeRecord.value.indexSplices[0].addedCount > 0) {
+					// New course added
+					this._pushCourse(this.courses[this.courses.length-1]);
+
+				} else {
+					// Course removed
+					// Abstract - for the time being
+					
+
+				}
+			}
+		},
+
+
+		_sortAllCourses() {
+			this.courses.forEach((item) => {
+				this._pushCourse(item);
+			});
+		},
+
+		_pushCourse(item) {
+			if(item.state === 'draft') {
+				this.push('drafts', item);
+			} else if (item.state === 'active') {
+				this.push('active', item);
+			} else {
+				this.push('blocked', item);
+			}
 		}
 	});
 	</script>

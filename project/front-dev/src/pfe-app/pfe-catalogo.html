@@ -37,7 +37,7 @@
 			// console.log('I accessed catalogo');
 			if(this.courses.length < 1){
 				this.$["xhr-element"].xhr({
-					url: '/api/courses',
+					url: '/api/courses/active',
 					token: this.token || null
 				});
 			}

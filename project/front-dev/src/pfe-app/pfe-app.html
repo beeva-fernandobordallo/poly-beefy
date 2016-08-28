@@ -15,6 +15,7 @@
 <link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 
 <link rel="import" href="pfe-home.html">
 
@@ -183,6 +184,9 @@
 					</div>
 				</paper-header-panel>
 			</paper-drawer-panel>
+
+			<paper-toast id="app-toast" text="{{toastMsg}}"></paper-toast>
+
 		</div>
 		<!-- Application Page END -->
 	</template>
@@ -234,6 +238,10 @@
 			'_computeUserData(user, token)',
 			'_routeChange(routeData.page)'
 		],
+
+		listeners: {
+			'new-toast': '_setupToast'
+		},
 
 		/*App Lifecycle methods*/
 		ready: function() {
@@ -339,6 +347,11 @@
 
 		_setPageTitle: function(page){
 			this.pageTitle = this.pageTitles[page];
+		},
+
+		_setupToast: function (event) {
+			this.toastMsg = event.detail.message;
+			this.$['app-toast'].open();
 		}
 
 	});
