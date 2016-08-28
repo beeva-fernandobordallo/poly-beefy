@@ -240,7 +240,8 @@
 		],
 
 		listeners: {
-			'new-toast': '_setupToast'
+			'new-toast': '_setupToast',
+			'session-expired': '_expiredSessionHandler'
 		},
 
 		/*App Lifecycle methods*/
@@ -352,6 +353,11 @@
 		_setupToast: function (event) {
 			this.toastMsg = event.detail.message;
 			this.$['app-toast'].open();
+		},
+
+		_expiredSessionHandler(event) {
+			this._setupToast(event);
+			this.fire('logout');
 		}
 
 	});

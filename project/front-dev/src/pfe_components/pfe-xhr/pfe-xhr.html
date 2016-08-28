@@ -43,7 +43,7 @@ Data management element in direct connection with the ajax service element (serv
 
 		_handleError(err) {
 			if (err.status === 401 && err.message === 'Bad token') {
-				this.fire('logout');
+				this.fire('session-expired', {message: 'Tu session ha expirado.'});
 			} else {
 				this.fire('error', err);
 			}
