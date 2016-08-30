@@ -1,0 +1,91 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<!--
+`pfe-course-card`
+Course card for administration purposes
+
+Course data structure received:
+
+```
+{
+  "_id": "57c1baa4b04de3e627c4d4db",
+  "cost": 200,
+  "created_date": "2016-08-27T16:07:00.244Z",
+  "date": 1470441600000,
+  "description": "Curso de arquitectura AWS.↵↵Veremos más más adelante",
+  "entity": "AWS",
+  "inscription_limit": 30,
+  "name": "Certificación AWS",
+  "num_attendees": 0,
+  "num_inscriptions": 0,
+  "state": "draft",
+  "updated_date": "2016-08-27T16:07:00.244Z",
+  "url": "www.amazon.com",
+  "votes": 0
+}
+```
+
+@demo demo/index.html 
+-->
+<dom-module id="pfe-course-card">
+	<template>
+		<style include="iron-flex iron-flex-alignment"></style>
+		<style>
+		:host {
+			display: block;
+		}
+		.full-width {
+			width: 100%;
+		}
+
+		.vertical-margin-5 {
+			margin: 5px 0;
+		}
+		</style>
+
+		<paper-card class="full-width vertical-margin-5" elevation="2" animated-shadow="true">
+			<div class="card-content">
+				<div class="layout horizontal center">
+					<h3>{{course.name}}</h3>
+					<span class="flex"></span>
+					<span>{{_formatDate(course.date)}}</span>
+				</div>
+				<p>{{course.description}}</p>
+			</div>
+			<div class="card-actions layout horizontal center">
+				<span class="flex"></span>
+				Course Actions:
+				<paper-icon-button id="edit-button" icon="create" on-tap="_editCourseAction"></paper-icon-button>
+				<paper-icon-button id="delete-button" icon="delete" on-tap="_deleteCourseAction"></paper-icon-button>
+			</div>
+		</paper-card>
+	</template>
+	<script>
+	Polymer({
+
+		is: 'pfe-course-card',
+
+		properties: {
+			prop1: {
+				type: String,
+				value: 'pfe-course-card',
+			},
+		},
+
+		_deleteCourseAction() {
+			this.fire('delete-course', { _id: this.course._id });
+		},
+
+		_formatDate(date){
+			const dateInput = new Date(date);
+			const year = dateInput.getFullYear();
+			const month = dateInput.getMonth() + 1;
+			const day = dateInput.getDay() + 1;
+			return `${day}/${month}/${year}`;
+		}
+
+	});
+	</script>
+</dom-module>

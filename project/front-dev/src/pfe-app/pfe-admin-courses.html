@@ -5,7 +5,7 @@
 <link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/pfe-course-card/pfe-course-card.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
@@ -44,10 +44,6 @@
 					bottom: 20px;
 					right: 20px;
 				};
-			}
-
-			paper-card.course-card {
-				margin: 5px 0;
 			}
 
 			.error{
@@ -95,15 +91,7 @@
 		<h2 class="indent">Borradores</h2>
 		<div id="course-admin-block" class="layout vertical">
 			<template is="dom-repeat" items="{{drafts}}">
-				<paper-card class="course-card" elevation="2" animated-shadow="true">
-					<div class="card-content">
-						<h3>{{item.name}}</h3>
-						<p>{{item.description}}</p>
-					</div>
-					<div class="card-actions">
-				
-					</div>
-				</paper-card>
+				<pfe-course-card course="[[item]]"></pfe-course-card>
 			</template>
 		</div>
 
@@ -111,15 +99,7 @@
 		<h2 class="indent">Cursos Visibles</h2>
 		<div id="course-admin-block" class="layout vertical">
 			<template is="dom-repeat" items="{{active}}">
-				<paper-card class="course-card" elevation="2" animated-shadow="true">
-					<div class="card-content">
-						<h3>{{item.name}}</h3>
-						<p>{{item.description}}</p>
-					</div>
-					<div class="card-actions">
-				
-					</div>
-				</paper-card>
+				<pfe-course-card course="[[item]]"></pfe-course-card>
 			</template>
 		</div>
 
@@ -127,17 +107,12 @@
 		<h2 class="indent">Cursos Bloqueados</h2>
 		<div id="course-admin-block" class="layout vertical">
 			<template is="dom-repeat" items="{{blocked}}">
-				<paper-card class="course-card" elevation="2" animated-shadow="true">
-					<div class="card-content">
-						<h3>{{item.name}}</h3>
-						<p>{{item.description}}</p>
-					</div>
-					<div class="card-actions">
-				
-					</div>
-				</paper-card>
+				<pfe-course-card course="[[item]]"></pfe-course-card>
 			</template>
 		</div>
+
+		<!-- Jump at the end (FOOTER LIKE) -->
+		<div style="height:100px"></div>
 
 		<!-- ADD FAB ICON -->
 		<paper-fab icon="add" on-tap="_openCreateDialog"></paper-fab>
@@ -222,6 +197,11 @@
 		observers: [
 			'_coursesChanged(courses.*)'
 		],
+
+		listeners: {
+			'delete-course': '_handleCourseDeletion'
+		},
+
 		_pageAccessed() {
 			// console.log('I accessed admin');
 			if (!this.courses.length){
@@ -310,6 +290,18 @@
 			}
 		},
 
+		_handleCourseDeletion(e) {
+			const courseData = {
+				_id: e.detail._id
+			}
+
+			this.$["xhr-element"].xhr({
+				url: '/api/courses/delete',
+				method: 'DELETE',
+				body: courseData,
+				token: this.token || null
+			});
+		},
 
 		_sortAllCourses() {
 			this.courses.forEach((item) => {

@@ -100,6 +100,10 @@ exports.editCourse = (req, res) => {
 exports.deleteCourse = (req, res) => {
 	if (req.data && req.data.length) {
 		let course = req.data[0];
+		if(course.state !== 'draft'){
+			res.status(403).end(JSON.stringify({message: 'You can not delete an active / blocked course.'}));
+			return;
+		}
 		course.remove((err) => {
 			if (err) {
 				return handlers.handleQueryError(err, res, 'deleteCourse');
