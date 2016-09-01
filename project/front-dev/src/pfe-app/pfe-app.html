@@ -184,11 +184,12 @@
 					</div>
 				</paper-header-panel>
 			</paper-drawer-panel>
-
-			<paper-toast id="app-toast" text="{{toastMsg}}"></paper-toast>
-
 		</div>
 		<!-- Application Page END -->
+
+		<!-- General APP Components -->
+		<paper-toast id="app-toast" text="{{toastMsg}}"></paper-toast>
+
 	</template>
 	<script>
 	Polymer({
@@ -356,6 +357,7 @@
 		},
 
 		_expiredSessionHandler(event) {
+			this.set('route.path', '/');
 			this._setupToast(event);
 			this.fire('logout');
 		}

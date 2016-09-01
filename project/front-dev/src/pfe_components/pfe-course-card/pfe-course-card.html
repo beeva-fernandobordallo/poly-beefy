@@ -78,11 +78,15 @@ Course data structure received:
 			this.fire('delete-course', { _id: this.course._id });
 		},
 
+		_editCourseAction() {
+			this.fire('edit-course', this.course);
+		},
+
 		_formatDate(date){
 			const dateInput = new Date(date);
 			const year = dateInput.getFullYear();
 			const month = dateInput.getMonth() + 1;
-			const day = dateInput.getDay() + 1;
+			const day = dateInput.getDate();
 			return `${day}/${month}/${year}`;
 		}
 
