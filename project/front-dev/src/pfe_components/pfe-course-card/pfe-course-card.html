@@ -75,7 +75,7 @@ Course data structure received:
 		},
 
 		_deleteCourseAction() {
-			this.fire('delete-course', { _id: this.course._id });
+			this.fire('delete-course', { _id: this.course._id, state: this.course.state });
 		},
 
 		_editCourseAction() {

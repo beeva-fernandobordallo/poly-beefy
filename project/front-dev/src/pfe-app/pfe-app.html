@@ -16,6 +16,9 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
 
 <link rel="import" href="pfe-home.html">
 
@@ -190,6 +193,17 @@
 		<!-- General APP Components -->
 		<paper-toast id="app-toast" text="{{toastMsg}}"></paper-toast>
 
+		<paper-dialog id="confirmation-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+			<div class="layout horizontal center">
+				<h2>¿Estas seguro de que quieres relizar la acción?</h2>
+			</div>
+			<div class="layout horizontal justified-around">
+				<span class="flex"></span>
+				<paper-button dialog-dismiss>Cancelar</paper-button>
+				<paper-button raised autofocus on-tap="_confirmActionDialog">Confirmar<iron-icon icon="check"></iron-icon></paper-button>
+			</div>
+		</paper-dialog>
+
 	</template>
 	<script>
 	Polymer({
@@ -242,7 +256,8 @@
 
 		listeners: {
 			'new-toast': '_setupToast',
-			'session-expired': '_expiredSessionHandler'
+			'session-expired': '_expiredSessionHandler',
+			'open-confirmation-dialog': '_confirmationDialogHandler'
 		},
 
 		/*App Lifecycle methods*/
@@ -360,6 +375,16 @@
 			this.set('route.path', '/');
 			this._setupToast(event);
 			this.fire('logout');
+		},
+
+		_confirmationDialogHandler(e) {
+			this.confirmationDialogCaller = e.detail.node;
+			this.$['confirmation-dialog'].open();
+		},
+
+		_confirmActionDialog() {
+			this.$['confirmation-dialog'].close();
+			this.confirmationDialogCaller._handleConfirmationDialogAction(true);
 		}
 
 	});
