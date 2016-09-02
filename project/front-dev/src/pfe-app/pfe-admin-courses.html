@@ -87,10 +87,10 @@
 			<h1>Gestión de Cursos</h1>
 		</div>
 
-		<!-- DRAFTS SECTION -->
+		<!-- DRAFT SECTION -->
 		<h2 class="indent">Borradores</h2>
 		<div id="course-admin-block" class="layout vertical">
-			<template is="dom-repeat" items="{{drafts}}">
+			<template is="dom-repeat" items="{{draft}}">
 				<pfe-course-card course="[[item]]"></pfe-course-card>
 			</template>
 		</div>
@@ -168,7 +168,7 @@
 				}
 			},
 
-			drafts: {
+			draft: {
 				type: Array,
 				value: function() {
 					return [];
@@ -278,13 +278,14 @@
 			} else if (res.detail.reqId === '/api/courses'){
 				this.courses = res.detail.data.data;
 			} else if(res.detail.reqId === '/api/courses/edit'){
-				this._clearCourseCreateForm();
+				const data = res.detail.data.data;
 				this.$["create-dialog"].close();
-				this.courses.forEach((item) => {
-					if (item._id === res.detail.data.data._id) {
-						item = res.detail.data.data;
+				this._clearCourseCreateForm();
+				this[data.state].forEach((item, index) => {
+					if (item._id === data._id) {
+						this.set(data.state + '.'+ index, data);
 					}
-				})
+				});
 				this.fire('new-toast', {message: 'Curso editado correctamente.'});
 			}
 		},
@@ -321,7 +322,8 @@
 			this.courseBeingEdited = e.detail._id;
 			this._populateCreateEditForm(e.detail);
 			this.editingCourse = true;
-			this._openCreateDialog();
+			this.createError = false;
+			this.$["create-dialog"].open();
 		},
 
 		_populateCreateEditForm(data){
@@ -355,7 +357,7 @@
 
 		_pushCourse(item) {
 			if(item.state === 'draft') {
-				this.push('drafts', item);
+				this.push('draft', item);
 			} else if (item.state === 'active') {
 				this.push('active', item);
 			} else {
