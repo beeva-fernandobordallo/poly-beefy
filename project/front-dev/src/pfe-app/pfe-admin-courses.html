@@ -127,6 +127,9 @@
 				<template is="dom-if" if="{{createError}}">
 					<span class="error">¡Error en la creación!</span>
 				</template>
+				<template is="dom-if" if="{{editError}}">
+					<span class="error">¡Error en la edición!</span>
+				</template>
 			</div>
 
 			<paper-dialog-scrollable>
@@ -222,6 +225,7 @@
 		_openCreateDialog() {
 			this.editingCourse = false;
 			this.createError = false;
+			this.editError = false;
 			this.$["create-dialog"].open();
 		},
 
@@ -291,10 +295,11 @@
 		},
 
 		_xhrError(err) {
-			if(err.detail.reqId === '/api/courses/create'){
+			if (err.detail.reqId === '/api/courses/create') {
 				this.createError = true;
+			} else if (err.detail.reqId === '/api/courses/edit') {
+				this.editError = true;
 			}
-			console.log(err);
 		},
 
 		_coursesChanged(changeRecord) {
@@ -323,6 +328,7 @@
 			this._populateCreateEditForm(e.detail);
 			this.editingCourse = true;
 			this.createError = false;
+			this.editError = false;
 			this.$["create-dialog"].open();
 		},
 
