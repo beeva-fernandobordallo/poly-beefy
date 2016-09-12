@@ -91,7 +91,7 @@
 		<h2 class="indent">Borradores</h2>
 		<div id="course-admin-block" class="layout vertical">
 			<template is="dom-repeat" items="{{draft}}">
-				<pfe-course-card course="[[item]]"></pfe-course-card>
+				<pfe-course-card course="[[item]]" is-draft="true"></pfe-course-card>
 			</template>
 		</div>
 
@@ -209,7 +209,9 @@
 
 		listeners: {
 			'delete-course': '_handleCourseDeletion',
-			'edit-course': '_handleCourseEdition'
+			'edit-course': '_handleCourseEdition',
+			'activate-course-state': '_handleCourseStateActivation',
+			'block-course-state': '_handleCourseStateBlock'
 		},
 
 		_pageAccessed() {
@@ -283,13 +285,13 @@
 			} else if (res.detail.reqId === '/api/courses'){
 				this.courses = res.detail.data.data;
 			} else if (res.detail.reqId === '/api/courses/delete'){
-				if (res.detail.status === 200) {
-					this[this.courseBeingDeleted.state].forEach((item, index) => {
-						if (item._id === this.courseBeingDeleted._id) {
-							this.splice(this.courseBeingDeleted.state, index, 1);
-						}
-					});
-				}
+				this[this.courseBeingDeleted.state].forEach((item, index) => {
+					if (item._id === this.courseBeingDeleted._id) {
+						this.splice(this.courseBeingDeleted.state, index, 1);
+					}
+				});
+				this.courseBeingDeleted = null;
+				this.fire('new-toast', {message: 'Borrador de curso eliminado correctamente.'});
 			} else if(res.detail.reqId === '/api/courses/edit'){
 				const data = res.detail.data.data;
 				this.$["create-dialog"].close();
@@ -300,6 +302,26 @@
 					}
 				});
 				this.fire('new-toast', {message: 'Curso editado correctamente.'});
+			} else if (res.detail.reqId === '/api/courses/activate') {
+				this[this.courseBeingActivated.state].forEach((item, index) => {
+					if (item._id === this.courseBeingActivated._id) {
+						this.splice(this.courseBeingActivated.state, index, 1);
+					}
+				});
+				this.courseBeingActivated.state = 'active';
+				this.push('active', this.courseBeingActivated);
+				this.courseBeingActivated = null;
+				this.fire('new-toast', {message: 'Curso activado correctamente.'});
+			} else if (res.detail.reqId === '/api/courses/block') {
+				this[this.courseBeingBlocked.state].forEach((item, index) => {
+					if (item._id === this.courseBeingBlocked._id) {
+						this.splice(this.courseBeingBlocked.state, index, 1);
+					}
+				});
+				this.courseBeingBlocked.state = 'blocked';
+				this.push('blocked', this.courseBeingBlocked);
+				this.courseBeingBlocked = null;
+				this.fire('new-toast', {message: 'Curso bloqueado correctamente.'});
 			}
 		},
 
@@ -362,13 +384,41 @@
 
 		_handleConfirmationDialogAction(confirm) {
 			if (confirm) {
-				this.$["xhr-element"].xhr({
-					url: '/api/courses/delete',
-					method: 'DELETE',
-					body: this.courseBeingDeleted,
-					token: this.token || null
-				});
+				if(this.courseBeingDeleted){
+					this.$["xhr-element"].xhr({
+						url: '/api/courses/delete',
+						method: 'DELETE',
+						body: this.courseBeingDeleted,
+						token: this.token || null
+					});
+				} else if (this.courseBeingActivated){
+					this.$["xhr-element"].xhr({
+						url: '/api/courses/activate',
+						method: 'PUT',
+						body: this.courseBeingActivated,
+						token: this.token || null
+					});
+				} else if (this.courseBeingBlocked){
+					this.$["xhr-element"].xhr({
+						url: '/api/courses/block',
+						method: 'PUT',
+						body: this.courseBeingBlocked,
+						token: this.token || null
+					});
+				}
 			}
+		},
+
+		_handleCourseStateActivation(e) {
+			this.courseBeingActivated = e.detail;
+
+			this.fire('open-confirmation-dialog', { node: this });
+		},
+
+		_handleCourseStateBlock(e) {
+			this.courseBeingBlocked = e.detail;
+
+			this.fire('open-confirmation-dialog', { node: this });
 		},
 
 		_sortAllCourses() {

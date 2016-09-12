@@ -58,7 +58,15 @@ Course data structure received:
 				<span class="flex"></span>
 				Course Actions:
 				<paper-icon-button id="edit-button" icon="create" on-tap="_editCourseAction"></paper-icon-button>
-				<paper-icon-button id="delete-button" icon="delete" on-tap="_deleteCourseAction"></paper-icon-button>
+				<template is="dom-if" if="{{isActive}}">
+					<paper-icon-button id="block-button" icon="cloud-download" on-tap="_blockCourseAction"></paper-icon-button>
+				</template>
+				<template is="dom-if" if="{{!isActive}}">
+					<paper-icon-button id="block-button" icon="cloud-upload" on-tap="_activateCourseAction"></paper-icon-button>
+				</template>
+				<template is="dom-if" if="{{isDraft}}">
+					<paper-icon-button id="delete-button" icon="delete" on-tap="_deleteCourseAction"></paper-icon-button>
+				</template>
 			</div>
 		</paper-card>
 	</template>
@@ -68,10 +76,28 @@ Course data structure received:
 		is: 'pfe-course-card',
 
 		properties: {
-			prop1: {
-				type: String,
-				value: 'pfe-course-card',
+			isDraft: {
+				type: Boolean,
+				value: false
 			},
+			course: {
+				type: Object,
+				observer: '_computeState'
+			},
+			isActive: {
+				type: Boolean,
+				value: false
+			}
+		},
+
+		_computeState() {
+			if (this.course && !this.isDraft) {
+				if(this.course.state === 'active') {
+					this.isActive = true;
+					return;
+				}
+				this.isActive = false;
+			}
 		},
 
 		_deleteCourseAction() {
@@ -80,6 +106,14 @@ Course data structure received:
 
 		_editCourseAction() {
 			this.fire('edit-course', this.course);
+		},
+
+		_activateCourseAction() {
+			this.fire('activate-course-state', this.course);
+		},
+
+		_blockCourseAction() {
+			this.fire('block-course-state', this.course);
 		},
 
 		_formatDate(date){
