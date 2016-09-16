@@ -22,7 +22,7 @@ const gutil = require('gulp-util');
 /**
  * Deploy-Dev
  */
-gulp.task('deploy-dev', ['clear-public'], function(){
+gulp.task('deploy-dev', ['pfe-components', 'clear-public'], function(){
 	gulp.src([
 		'./index.html',
 		'./manifest.json',
@@ -40,7 +40,7 @@ gulp.task('deploy-dev', ['clear-public'], function(){
 /**
  * Deploy-Production
  */
-gulp.task('deploy-pro', ['clear-public', 'poly-build'], function(){
+gulp.task('deploy-pro', ['pfe-components', 'clear-public', 'poly-build'], function(){
 	gulp.src([
 		'./build/bundled/**/*'
 	], { base: './build/bundled'})
@@ -98,4 +98,16 @@ gulp.task('poly-build', function(done) {
 		gutil.log('Polymer build exited with error');
 		done();
 	});
+});
+
+
+/**
+ * Transfer PFE Components to bower_components folder
+ */
+gulp.task('pfe-components', function(){
+	gulp.src([
+		'./src/pfe_components/**/*.html'
+	], { base: './src/pfe_components'})
+	.pipe(gulp.dest('./bower_components/'));
+	gutil.log('Copied all pfe_components to bower_components folder!')
 });
