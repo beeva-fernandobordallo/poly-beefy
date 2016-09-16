@@ -2,12 +2,67 @@
 <link rel="import" href="../../bower_components/serv-location/serv-location-behavior.html">
 <link rel="import" href="../../bower_components/pfe-xhr/pfe-xhr.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <dom-module id="pfe-catalogo">
 	<template>
 		<style include="iron-flex iron-flex-alignment"></style>
+
+		<style>
+			.course-toggle-block {
+				font-size: 25px;
+				text-align: left;
+				padding-left: 30px;
+				padding-top: 5px;
+				padding-bottom: 5px;
+				margin: 5px 20px;
+				width: 90%;
+				height: 35px;
+				border: 1px solid #ccc;
+				border-radius: 2px;
+				box-sizing: border-box;
+			}
+
+			.course-info-card {
+				text-align: left;
+				padding-top: 5px;
+				padding-bottom: 5px;
+				width: 90%;
+				box-sizing: border-box;
+			}
+
+			.card-block {
+				width: 100%;
+			}
+		</style>
+
 		<pfe-xhr id="xhr-element" on-data="_xhrDataReceived" on-error="_xhrError"></pfe-xhr>
-		<div class="layout vertical center">
+		<div class="layout vertical center" id="main-container">
 			<h1>Catálogo</h1>
+			<template is="dom-repeat" items="[[courses]]">
+				<div on-tap="openCourseInfo" id="course-collapse-toggle-[[index]]" class="course-toggle-block">[[item.name]]</div>
+				<iron-collapse id="course-collapsed-[[index]]" class="course-info-card">
+					<paper-card image="" elevation="1" animated-shadow="false" class="card-block">
+						<div class="card-content">
+							<p>
+								Description: [[item.description]]
+							</p>
+							<p>
+								Cost: [[item.cost]]
+							</p>
+							<p>
+								URL: [[item.url]]
+							</p>
+							<p>
+								Date: [[item.date]]
+							</p>
+						</div>
+						<!-- <div class="card-actions">
+							
+						</div> -->
+					</paper-card>
+				</iron-collapse>
+			</template>
 		</div>
 	</template>
 	<script>
@@ -33,6 +88,11 @@
 				type: String
 			}
 		},
+		openCourseInfo(e) {
+			var selectedCourseIndex = e.target.id.replace('course-collapse-toggle-', '');
+			var courseCollapsedCard = this.$['main-container'].querySelector('#course-collapsed-' + selectedCourseIndex)
+			courseCollapsedCard.toggle();
+		},
 		_pageAccessed(){
 			// console.log('I accessed catalogo');
 			if(this.courses.length < 1){
@@ -44,6 +104,7 @@
 		},
 		_xhrDataReceived(res) {
 			console.log(res.detail.data);
+			this.set('courses', res.detail.data.data)
 		},
 		_xhrError(err) {
 			console.log(err.detail);
