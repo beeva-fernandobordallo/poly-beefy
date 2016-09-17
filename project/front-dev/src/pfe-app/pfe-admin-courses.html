@@ -131,7 +131,7 @@
 		<!-- CREATE DIALOG -->
 		<paper-dialog id="create-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
 			<div class="layout horizontal center">
-				<h2>Añadir Curso</h2>
+				<h2>[[titleCourseAdminDialog]]</h2>
 				<span class="flex"></span>
 				<template is="dom-if" if="{{createError}}">
 					<span class="error">¡Error en la creación!</span>
@@ -237,6 +237,11 @@
 				value: false
 			},
 
+			titleCourseAdminDialog: {
+				type: String,
+				value: ''
+			},
+
 			token: {
 				type: String
 			}
@@ -290,6 +295,7 @@
 			this.editingCourse = false;
 			this.createError = false;
 			this.editError = false;
+			this.titleCourseAdminDialog = 'Añadir Curso';
 			this.$["create-dialog"].open();
 		},
 
@@ -431,6 +437,7 @@
 			this.editingCourse = true;
 			this.createError = false;
 			this.editError = false;
+			this.titleCourseAdminDialog = 'Edición de Curso';
 			this.$["create-dialog"].open();
 		},
 
