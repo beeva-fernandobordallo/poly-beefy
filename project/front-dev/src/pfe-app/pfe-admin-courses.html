@@ -73,30 +73,52 @@
 		<div class="layout vertical center">
 			<h1>Gestión de Cursos</h1>
 		</div>
+		<div class="layout horizontal center" style="margin-left: 20px">
+			<label for="course-type-filter">Cursos: </label>
+			<div class="courseTypeFilter" name ="course-type-filter">
+				<paper-radio-group selected="draft">
+					<paper-radio-button name="draft" on-tap="_changeTypeFilter">
+						Borradores
+					</paper-radio-button>
+					<paper-radio-button name="active" on-tap="_changeTypeFilter">
+						Activos
+					</paper-radio-button>
+					<paper-radio-button name="blocked" on-tap="_changeTypeFilter">
+						Bloqueados
+					</paper-radio-button>
+				</paper-radio-group>
+			</div>
+		</div>
 
 		<!-- DRAFT SECTION -->
-		<h2 class="indent">Borradores</h2>
-		<div id="course-admin-block" class="layout vertical">
-			<template is="dom-repeat" items="{{draft}}">
-				<pfe-course-card course="[[item]]" is-draft="true"></pfe-course-card>
-			</template>
-		</div>
+		<template is="dom-if" if="{{showDrafts}}">
+			<h2 class="indent">Borradores</h2>
+			<div id="course-admin-block" class="layout vertical">
+				<template is="dom-repeat" items="{{draft}}">
+					<pfe-course-card course="[[item]]" is-draft="true"></pfe-course-card>
+				</template>
+			</div>
+		</template>
 
 		<!-- ACTIVE SECTION -->
-		<h2 class="indent">Cursos Visibles</h2>
-		<div id="course-admin-block" class="layout vertical">
-			<template is="dom-repeat" items="{{active}}">
-				<pfe-course-card course="[[item]]"></pfe-course-card>
-			</template>
-		</div>
+		<template is="dom-if" if="{{showActive}}">
+			<h2 class="indent">Cursos Visibles</h2>
+			<div id="course-admin-block" class="layout vertical">
+				<template is="dom-repeat" items="{{active}}">
+					<pfe-course-card course="[[item]]"></pfe-course-card>
+				</template>
+			</div>
+		</template>
 
 		<!-- BLOCKED SECTION -->
-		<h2 class="indent">Cursos Bloqueados</h2>
-		<div id="course-admin-block" class="layout vertical">
-			<template is="dom-repeat" items="{{blocked}}">
-				<pfe-course-card course="[[item]]"></pfe-course-card>
-			</template>
-		</div>
+		<template is="dom-if" if="{{showBlocked}}">
+			<h2 class="indent">Cursos Bloqueados</h2>
+			<div id="course-admin-block" class="layout vertical">
+				<template is="dom-repeat" items="{{blocked}}">
+					<pfe-course-card course="[[item]]"></pfe-course-card>
+				</template>
+			</div>
+		</template>
 
 		<!-- Jump at the end (FOOTER LIKE) -->
 		<div style="height:100px"></div>
@@ -127,7 +149,12 @@
 					<div suffix>€</div>
 				</paper-input>
 				<paper-input id="create-limit" label="Limite de Alumnos" type="number" placeholder="0 = Sin limite; >0 = Limitado"></paper-input>
-				<paper-input id="create-date" label="Fecha" type="date"></paper-input>
+				<label for="date-group">Tipo de fecha:</label>
+				<paper-radio-group name="date-group" selected="{{dateType}}">
+					<paper-radio-button name="noDate">Siempre Activo</paper-radio-button>
+					<paper-radio-button name="fixedDate">Fecha Concreta</paper-radio-button>
+				</paper-radio-group>
+				<paper-input id="create-date" label="Fecha" type="date" hidden$="{{noSpecificDate}}"></paper-input>
 				<paper-textarea id="create-description" label="Description" char-counter	></paper-textarea>
 			</paper-dialog-scrollable>
 			<div class="layout horizontal">
@@ -185,6 +212,31 @@
 				value: false
 			},
 
+			dateType: {
+				type: String,
+				observer: '_dateTypeChanged'
+			},
+
+			noSpecificDate: {
+				type: Boolean,
+				value: true
+			},
+
+			showDrafts: {
+				type: Boolean,
+				value: true
+			},
+
+			showActive: {
+				type: Boolean,
+				value: false
+			},
+
+			showBlocked: {
+				type: Boolean,
+				value: false
+			},
+
 			token: {
 				type: String
 			}
@@ -199,6 +251,28 @@
 			'edit-course': '_handleCourseEdition',
 			'activate-course-state': '_handleCourseStateActivation',
 			'block-course-state': '_handleCourseStateBlock'
+		},
+
+		_changeTypeFilter(e){
+			this.showDrafts = false;
+			this.showBlocked = false;
+			this.showActive = false
+			if(e.target.name === 'draft'){
+				this.showDrafts = true;
+			} else if (e.target.name === 'active'){
+				this.showActive = true;
+			} else {
+				this.showBlocked = true;
+			}
+		},
+
+		_dateTypeChanged(item){
+			if(item === 'noDate'){
+				this.noSpecificDate = true;
+				this.$["create-date"].value = '00/00/0000'
+			} else {
+				this.noSpecificDate = false;
+			}
 		},
 
 		_pageAccessed() {
@@ -221,7 +295,12 @@
 
 		_saveNewCourse() {
 			// Format date
-			const tempDate = new Date( this.$["create-date"].value.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3") ).getTime();
+			let tempDate;
+			if(this.$["create-date"].value === '00/00/0000'){
+				tempDate = 0;
+			} else {
+				tempDate = new Date( this.$["create-date"].value.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3") ).getTime();
+			}
 
 			const courseData = {
 				name: this.$["create-name"].value,
@@ -343,6 +422,11 @@
 
 		_handleCourseEdition(e){
 			this.courseBeingEdited = e.detail._id;
+			if(e.detail.date > 0){
+				this.dateType = 'fixedDate';
+			} else {
+				this.dateType = 'noDate';
+			}
 			this._populateCreateEditForm(e.detail);
 			this.editingCourse = true;
 			this.createError = false;

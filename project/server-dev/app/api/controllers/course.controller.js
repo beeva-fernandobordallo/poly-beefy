@@ -16,7 +16,9 @@ exports.listAllCourses = (req, res) => {
 
 
 exports.listActiveCourses = (req, res) => {
-	const query = Course.find({ date: { $gt: Date.now() }, state: 'active'});
+	const query = Course.find({
+		$or: [ { date: { $gt: Date.now() } }, { date: {$lt: 10 } } ],
+		state: 'active'});
 	query.exec((err, courses) => {
 		if (err){
 			return handleQueryError(err, res, 'listActiveCourses');

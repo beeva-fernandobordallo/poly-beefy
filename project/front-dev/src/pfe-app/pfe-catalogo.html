@@ -6,9 +6,10 @@
 
 		<style>
 			.course-toggle-block {
-				font-size: 25px;
+				font-size: 20px;
 				text-align: left;
 				padding-left: 30px;
+				padding-right: 20px;
 				padding-top: 5px;
 				padding-bottom: 5px;
 				margin: 5px 20px;
@@ -30,6 +31,10 @@
 			.card-block {
 				width: 100%;
 			}
+
+			.small-text {
+				font-size: 10px;
+			}
 		</style>
 
 		<pfe-xhr id="xhr-element" on-data="_xhrDataReceived" on-error="_xhrError"></pfe-xhr>
@@ -40,7 +45,14 @@
 				<iron-icon icon="search"></iron-icon>
 			</div>
 			<template is="dom-repeat" id="coursesList" items="[[courses]]" filter="_filterCourses">
-				<div on-tap="openCourseInfo" id="course-collapse-toggle-[[index]]" class="course-toggle-block">[[item.name]]</div>
+				<div on-tap="openCourseInfo" id="course-collapse-toggle-[[index]]" class="course-toggle-block layout horizontal">
+					<span class="flex">
+						[[item.name]]
+					</span>
+					<span class="small-text">
+						Fecha: [[item.date]]
+					</span>
+				</div>
 				<iron-collapse id="course-collapsed-[[index]]" class="course-info-card">
 					<paper-card image="" elevation="1" animated-shadow="false" class="card-block">
 						<div class="card-content">
@@ -52,9 +64,6 @@
 							</p>
 							<p>
 								URL: [[item.url]]
-							</p>
-							<p>
-								Date: [[item.date]]
 							</p>
 						</div>
 						<!-- <div class="card-actions">
@@ -95,8 +104,13 @@
 			}
 		},
 		openCourseInfo(e) {
-			var selectedCourseIndex = e.target.id.replace('course-collapse-toggle-', '');
-			var courseCollapsedCard = this.$['main-container'].querySelector('#course-collapsed-' + selectedCourseIndex)
+			let selectedCourseIndex;
+			if(e.target.nodeName === 'SPAN'){
+				selectedCourseIndex = e.target.parentElement.id.replace('course-collapse-toggle-', '');
+			} else {
+				selectedCourseIndex = e.target.id.replace('course-collapse-toggle-', '');
+			}
+			let courseCollapsedCard = this.$['main-container'].querySelector('#course-collapsed-' + selectedCourseIndex)
 			courseCollapsedCard.toggle();
 		},
 
@@ -106,6 +120,17 @@
 
 		_filterChanged(){
 			this.$.coursesList.render();
+		},
+
+		_formatDate(date){
+			if(date === 0){
+				return 'Sin Fecha'
+			}
+			const dateInput = new Date(date);
+			const year = dateInput.getFullYear();
+			const month = dateInput.getMonth() + 1;
+			const day = dateInput.getDate();
+			return `${day}/${month}/${year}`;
 		},
 
 		_pageAccessed(){
@@ -118,11 +143,21 @@
 			}
 		},
 		_xhrDataReceived(res) {
-			console.log(res.detail.data);
-			this.set('courses', res.detail.data.data)
+			this._saveCourseData(this._treatCourseData(res.detail.data.data));
 		},
 		_xhrError(err) {
 			console.log(err.detail);
+		},
+
+		_treatCourseData(data){
+			return data.map((item) => {
+				item.date = this._formatDate(item.date);
+				return item;
+			});
+		},
+
+		_saveCourseData(data){
+			this.set('courses', data);
 		}
 	});
 	</script>

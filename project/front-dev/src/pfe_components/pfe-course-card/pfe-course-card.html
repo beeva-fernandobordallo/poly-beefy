@@ -62,10 +62,10 @@ Course data structure received:
 					<paper-icon-button id="block-button" icon="cloud-download" on-tap="_blockCourseAction"></paper-icon-button>
 				</template>
 				<template is="dom-if" if="{{!isActive}}">
-					<paper-icon-button id="block-button" icon="cloud-upload" on-tap="_activateCourseAction"></paper-icon-button>
+					<paper-icon-button id="block-button" icon="cloud-upload" on-tap="_activateCourseAction" style="color: green"></paper-icon-button>
 				</template>
 				<template is="dom-if" if="{{isDraft}}">
-					<paper-icon-button id="delete-button" icon="delete" on-tap="_deleteCourseAction"></paper-icon-button>
+					<paper-icon-button id="delete-button" icon="delete" on-tap="_deleteCourseAction" style="color: red"></paper-icon-button>
 				</template>
 			</div>
 		</paper-card>
