@@ -248,6 +248,12 @@
 						'admin-courses': 'Administrar Cursos'
 					};
 				}
+			},
+
+			externalMsg: {
+				type: String,
+				value: '',
+				observer: '_receivedExternalMsg'
 			}
 		},
 
@@ -388,6 +394,13 @@
 		_confirmActionDialog() {
 			this.$['confirmation-dialog'].close();
 			this.confirmationDialogCaller._handleConfirmationDialogAction(true);
+		},
+
+		_receivedExternalMsg(msg) {
+			if(msg === 'You are not a Beeva employee') {
+				this.toastMsg = 'Solo se puede acceder con una cuenta @beeva';
+				this.$['app-toast'].open();
+			}
 		}
 
 	});

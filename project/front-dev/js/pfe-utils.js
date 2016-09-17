@@ -55,6 +55,7 @@ PFE.utils.authLink = function(state, user, token, msg) {
 		// Authentication failed - Handle
 		// TODO
 		console.log(msg);
+		PFE.app.externalMsg = msg;
 		return;
 	}
 
