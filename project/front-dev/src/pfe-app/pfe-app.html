@@ -197,7 +197,7 @@
 
 		<paper-dialog id="confirmation-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
 			<div class="layout horizontal center" style="font-size: 1.3em">
-				<span>¿Estas seguro de que quieres relizar la acción?</span>
+				<span id="confirmation-dialog-inner-msg"></span>
 			</div>
 			<div class="layout horizontal justified-around">
 				<span class="flex"></span>
@@ -381,6 +381,7 @@
 
 		_confirmationDialogHandler(e) {
 			this.confirmationDialogCaller = e.detail.node;
+			this.$['confirmation-dialog-inner-msg'].innerHTML = e.detail.msg || '¿Estas seguro?';
 			this.$['confirmation-dialog'].open();
 		},
 

@@ -69,10 +69,7 @@
 		<!-- DATA ACCESS ELEMENT -->
 		<pfe-xhr id="xhr-element" on-data="_xhrDataReceived" on-error="_xhrError"></pfe-xhr>
 
-		<!-- PAGE HEADER -->
-		<div class="layout vertical center">
-			<h1>Gestión de Cursos</h1>
-		</div>
+
 		<div class="layout horizontal center" style="margin-left: 20px">
 			<label for="course-type-filter">Cursos: </label>
 			<div class="courseTypeFilter" name ="course-type-filter">
@@ -93,31 +90,54 @@
 		<!-- DRAFT SECTION -->
 		<template is="dom-if" if="{{showDrafts}}">
 			<h2 class="indent">Borradores</h2>
-			<div id="course-admin-block" class="layout vertical">
-				<template is="dom-repeat" items="{{draft}}">
-					<pfe-course-card course="[[item]]" is-draft="true"></pfe-course-card>
-				</template>
-			</div>
+			<template is="dom-if" if="{{draft.length}}">
+				<div id="course-admin-block" class="layout vertical">
+					<template is="dom-repeat" items="{{draft}}">
+						<pfe-course-card course="[[item]]" is-draft="true"></pfe-course-card>
+					</template>
+				</div>
+			</template>
+			<template is="dom-if" if="{{!draft.length}}">
+				<div class="layout vertical center">
+					<h2>¡No hay borradores!</h2>
+					<p>Crea un nuevo curso ;)</p>
+				</div>
+			</template>
 		</template>
 
 		<!-- ACTIVE SECTION -->
 		<template is="dom-if" if="{{showActive}}">
-			<h2 class="indent">Cursos Visibles</h2>
-			<div id="course-admin-block" class="layout vertical">
-				<template is="dom-repeat" items="{{active}}">
-					<pfe-course-card course="[[item]]"></pfe-course-card>
-				</template>
-			</div>
+			<h2 class="indent">Cursos Activos</h2>
+			<template is="dom-if" if="{{active.length}}">
+				<div id="course-admin-block" class="layout vertical">
+					<template is="dom-repeat" items="{{active}}">
+						<pfe-course-card course="[[item]]"></pfe-course-card>
+					</template>
+				</div>
+			</template>
+			<template is="dom-if" if="{{!active.length}}">
+				<div class="layout vertical center">
+					<h2>¡No hay Cursos Activos!</h2>
+					<p>Crea un nuevo curso y actívalo</p>
+				</div>
+			</template>
 		</template>
 
 		<!-- BLOCKED SECTION -->
 		<template is="dom-if" if="{{showBlocked}}">
 			<h2 class="indent">Cursos Bloqueados</h2>
-			<div id="course-admin-block" class="layout vertical">
-				<template is="dom-repeat" items="{{blocked}}">
-					<pfe-course-card course="[[item]]"></pfe-course-card>
-				</template>
-			</div>
+			<template is="dom-if" if="{{blocked.length}}">
+				<div id="course-admin-block" class="layout vertical">
+					<template is="dom-repeat" items="{{blocked}}">
+						<pfe-course-card course="[[item]]"></pfe-course-card>
+					</template>
+				</div>
+			</template>
+			<template is="dom-if" if="{{!blocked.length}}">
+				<div class="layout vertical center">
+					<h2>¡No hay cursos bloqueados!</h2>
+				</div>
+			</template>
 		</template>
 
 		<!-- Jump at the end (FOOTER LIKE) -->
@@ -457,7 +477,10 @@
 				state: e.detail.state
 			};
 
-			this.fire('open-confirmation-dialog', { node: this });
+			this.fire('open-confirmation-dialog', {
+				node: this,
+				msg: '¿Seguro que quieres BORRAR el curso?'
+			});
 		},
 
 		_handleConfirmationDialogAction(confirm) {
@@ -490,13 +513,19 @@
 		_handleCourseStateActivation(e) {
 			this.courseBeingActivated = e.detail;
 
-			this.fire('open-confirmation-dialog', { node: this });
+			this.fire('open-confirmation-dialog', {
+				node: this,
+				msg: '¿Seguro que quieres ACTIVAR el curso?'
+			});
 		},
 
 		_handleCourseStateBlock(e) {
 			this.courseBeingBlocked = e.detail;
 
-			this.fire('open-confirmation-dialog', { node: this });
+			this.fire('open-confirmation-dialog', {
+				node: this,
+				msg: '¿Seguro que quieres BLOQUEAR el curso?'
+			});
 		},
 
 		_sortAllCourses() {

@@ -11,18 +11,17 @@
 				padding-left: 30px;
 				padding-right: 20px;
 				padding-top: 5px;
-				padding-bottom: 5px;
-				margin: 5px 20px;
+				margin: 5px 20px 0px 20px;
 				width: 90%;
 				height: 35px;
 				border: 1px solid #ccc;
-				border-radius: 2px;
+				border-radius: 2px 2px 0 0;
 				box-sizing: border-box;
+				background: white;
 			}
 
 			.course-info-card {
 				text-align: left;
-				padding-top: 5px;
 				padding-bottom: 5px;
 				width: 90%;
 				box-sizing: border-box;
@@ -39,10 +38,9 @@
 
 		<pfe-xhr id="xhr-element" on-data="_xhrDataReceived" on-error="_xhrError"></pfe-xhr>
 		<div class="layout vertical center" id="main-container">
-			<h1>Catálogo</h1>
 			<div class="search-bar layout horizontal center" style="width:50%">
 				<paper-input label="Filtro" class="flex" value="{{courseFilter}}"></paper-input>
-				<iron-icon icon="search"></iron-icon>
+				<iron-icon icon="search" style="width: 30px; height: 30px; padding-top: 20px"></iron-icon>
 			</div>
 			<template is="dom-repeat" id="coursesList" items="[[courses]]" filter="_filterCourses">
 				<div on-tap="openCourseInfo" id="course-collapse-toggle-[[index]]" class="course-toggle-block layout horizontal">
@@ -72,6 +70,8 @@
 					</paper-card>
 				</iron-collapse>
 			</template>
+		</div>
+		<div class="bottom-temp-fix" style="height: 100px">
 		</div>
 	</template>
 	<script>

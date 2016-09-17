@@ -2,6 +2,7 @@
 <link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <!--
 `pfe-course-card`
 Course card for administration purposes
@@ -58,14 +59,34 @@ Course data structure received:
 				<span class="flex"></span>
 				Course Actions:
 				<paper-icon-button id="edit-button" icon="create" on-tap="_editCourseAction"></paper-icon-button>
+					<paper-tooltip
+						for="edit-button"
+						position="top"
+						offset="14">Editar
+					</paper-tooltip>
 				<template is="dom-if" if="{{isActive}}">
 					<paper-icon-button id="block-button" icon="cloud-download" on-tap="_blockCourseAction"></paper-icon-button>
+					<paper-tooltip
+						for="block-button"
+						position="top"
+						offset="14">Blockear
+					</paper-tooltip>
 				</template>
 				<template is="dom-if" if="{{!isActive}}">
-					<paper-icon-button id="block-button" icon="cloud-upload" on-tap="_activateCourseAction" style="color: green"></paper-icon-button>
+					<paper-icon-button id="activate-button" icon="cloud-upload" on-tap="_activateCourseAction" style="color: green"></paper-icon-button>
+					<paper-tooltip
+						for="activate-button"
+						position="top"
+						offset="14">Activar
+					</paper-tooltip>
 				</template>
 				<template is="dom-if" if="{{isDraft}}">
 					<paper-icon-button id="delete-button" icon="delete" on-tap="_deleteCourseAction" style="color: red"></paper-icon-button>
+					<paper-tooltip
+						for="delete-button"
+						position="top"
+						offset="14">Borrar
+					</paper-tooltip>
 				</template>
 			</div>
 		</paper-card>
