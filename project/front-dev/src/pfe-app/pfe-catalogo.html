@@ -35,7 +35,11 @@
 		<pfe-xhr id="xhr-element" on-data="_xhrDataReceived" on-error="_xhrError"></pfe-xhr>
 		<div class="layout vertical center" id="main-container">
 			<h1>Catálogo</h1>
-			<template is="dom-repeat" items="[[courses]]">
+			<div class="search-bar layout horizontal center" style="width:50%">
+				<paper-input label="Filtro" class="flex" value="{{courseFilter}}"></paper-input>
+				<iron-icon icon="search"></iron-icon>
+			</div>
+			<template is="dom-repeat" id="coursesList" items="[[courses]]" filter="_filterCourses">
 				<div on-tap="openCourseInfo" id="course-collapse-toggle-[[index]]" class="course-toggle-block">[[item.name]]</div>
 				<iron-collapse id="course-collapsed-[[index]]" class="course-info-card">
 					<paper-card image="" elevation="1" animated-shadow="false" class="card-block">
@@ -82,6 +86,12 @@
 
 			token: {
 				type: String
+			},
+
+			courseFilter: {
+				type: String,
+				value: '',
+				observer: '_filterChanged'
 			}
 		},
 		openCourseInfo(e) {
@@ -89,6 +99,15 @@
 			var courseCollapsedCard = this.$['main-container'].querySelector('#course-collapsed-' + selectedCourseIndex)
 			courseCollapsedCard.toggle();
 		},
+
+		_filterCourses(item){
+			return item.name.match(new RegExp(this.courseFilter, 'i')) || item.description.match(new RegExp(this.courseFilter, 'i'));
+		},
+
+		_filterChanged(){
+			this.$.coursesList.render();
+		},
+
 		_pageAccessed(){
 			// console.log('I accessed catalogo');
 			if(this.courses.length < 1){
