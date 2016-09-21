@@ -5,6 +5,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 
 const courseCtrl = require('./controllers/course.controller');
+const mailCtrl = require('./controllers/mail.controller');
 const roleCtrl = require('./controllers/role.controller');
 
 // Main route setup function exported
@@ -171,7 +172,7 @@ module.exports = function apiRouteSetup(app, passport) {
 	 * Course CRUD Routes
 	 */
 	// Lists
-	apiRoutes.get('/courses', courseCtrl.listAllCourses);
+	apiRoutes.get('/courses', roleCtrl.isAdmin, courseCtrl.listAllCourses);
 	apiRoutes.get('/courses/active', courseCtrl.listActiveCourses);
 	apiRoutes.get('/courses/old', courseCtrl.listOldCourses);
 
@@ -189,11 +190,24 @@ module.exports = function apiRouteSetup(app, passport) {
 	apiRoutes.delete('/courses/delete', roleCtrl.isAdmin, courseCtrl.findById, courseCtrl.deleteCourse);
 
 
-	 // Testing route - Send decoded token to user
-	 // 
-	 // apiRoutes.get('/getDecodedToken', (req, res) => {
-	 // 	res.end(JSON.stringify(req.decoded));
-	 // });
+	/**
+	 * Mail Box CRUD Routes
+	 */
+
+	// Lists
+	apiRoutes.get('/mail', roleCtrl.isAdmin, mailCtrl.listAllMails);
+	apiRoutes.get('/pending-mail', roleCtrl.isAdmin, mailCtrl.listPendingMails)
+	apiRoutes.get('/my-mail', mailCtrl.listMyMail);
+
+
+	// Create
+	apiRoutes.post('/mail/create', mailCtrl.createMail);
+
+	// Update
+	apiRoutes.put('/mail/extend', roleCtrl.isAdmin, mailCtrl.findById, mailCtrl.extendMail);
+
+	// Delete
+	apiRoutes.delete('/mail/delete', roleCtrl.isMaster, mailCtrl.findById, mailCtrl.deleteMail);
 
 	/*
 	 * Bind routes to base route '/api'

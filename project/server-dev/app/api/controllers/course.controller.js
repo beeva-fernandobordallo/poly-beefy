@@ -30,7 +30,9 @@ exports.listActiveCourses = (req, res) => {
 
 
 exports.listOldCourses = (req, res) => {
-	const query = Course.find({ date: { $lt: Date.now() }, state: 'active'});
+	const query = Course.find({
+		$and: [ { date: { $lt: Date.now() } }, { date: {$gt: 10 } } ],
+		state: 'active'});
 	query.exec((err, courses) => {
 		if (err){
 			return handleQueryError(err, res, 'listOldCourses');
