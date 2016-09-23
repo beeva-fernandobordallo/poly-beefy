@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 
 const mailSchema = mongoose.Schema({
 	user_id: {
-		type: Schema.Types.ObjectId
+		type: mongoose.Schema.Types.ObjectId
 	},
 	body: {
 		type: String

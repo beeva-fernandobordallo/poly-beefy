@@ -8,11 +8,11 @@ const mongoose = require('mongoose');
 
 const inscriptionSchema = mongoose.Schema({
 	student_id: {
-		type: Schema.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		required: true
 	},
 	course_id: {
-		type: Schema.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		required: true
 	},
 	state: {
