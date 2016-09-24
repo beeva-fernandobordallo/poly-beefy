@@ -14,7 +14,8 @@ const mailSchema = mongoose.Schema({
 		type: String
 	},
 	mod_date: {
-		type: Number
+		type: Date,
+		default: Date.now
 	},
 	created_date: {
 		type: Date,

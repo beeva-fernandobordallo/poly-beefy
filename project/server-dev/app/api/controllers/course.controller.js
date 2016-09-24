@@ -61,7 +61,7 @@ exports.createCourse = (req, res) => {
 	course.cost = req.body.cost;
 	course.date = req.body.date;
 	course.inscription_limit = req.body.inscription_limit;
-	// save our user to the database
+	// save course to the database
 	course.save((err) => {
 		if (err) {
 			return handlers.handleQueryError(err, res, 'createCourse');
@@ -156,7 +156,7 @@ exports.findById = (req, res, next) => {
 		const query = Course.find({_id: req.body._id});
 		query.exec((err, course) => {
 			if (err){
-				return handleQueryError(err, res, 'listOldCourses');
+				return handleQueryError(err, res, 'findCourseById');
 			}
 
 			handlers.handleMiddlewareQuery(course, req, next);
