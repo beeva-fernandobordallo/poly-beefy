@@ -80,6 +80,7 @@
 			cursor:pointer; 
 		}
 		</style>
+
 		<!-- Routing Elements START -->
 		<app-location route="{{route}}"></app-location>
 		<app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}">
@@ -213,17 +214,29 @@
 		is: 'pfe-app',
 
 		properties: {
+			/**
+			 * Control property used to show/hide login and redirect to home @package
+			 * @type {Boolean}
+			 */
 			userActive: {
 				type: Boolean,
 				value: false
 			},
 
+			/**
+			 * Page name
+			 * @type {String}
+			 */
 			page: {
 				type: String,
 				observer: '_pageChanged'
 			},
 
-			pageWhitList: {
+			/**
+			 * List of pages accepted by the router
+			 * @type {Array}
+			 */
+			pageWhiteList: {
 				type: Array,
 				value: function(){
 					return [
@@ -237,6 +250,10 @@
 				}
 			},
 
+			/**
+			 * Key/Value pairs containing the page heading bound to a route
+			 * @type {Object}
+			 */
 			pageTitles: {
 				type: Object,
 				value: function(){
@@ -250,6 +267,10 @@
 				}
 			},
 
+			/**
+			 * Message received by the application from the outside
+			 * @type {String}
+			 */
 			externalMsg: {
 				type: String,
 				value: '',
@@ -257,11 +278,19 @@
 			}
 		},
 
+		/**
+		 * Observers Array
+		 * @type {Array}
+		 */
 		observers: [
 			'_computeUserData(user, token)',
 			'_routeChange(routeData.page)'
 		],
 
+		/**
+		 * Listener Object
+		 * @type {Object}
+		 */
 		listeners: {
 			'new-toast': '_setupToast',
 			'session-expired': '_expiredSessionHandler',
@@ -285,6 +314,22 @@
 			this.set('route.path', '/');
 		},
 
+		/*===================*/
+		/*Private App methods*/
+		/*===================*/
+
+		/**
+		 * Check if page string is in the routes white list
+		 * @param  {String} page Page name
+		 * @return {Boolean}      True/False
+		 */
+		_checkWhiteList: function(page){
+			if(this.pageWhiteList.indexOf(page) !== -1){
+				return true;
+			}
+			return false;
+		},
+
 		/**
 		 * Observes User and Token data
 		 * @param  {Object} user User details
@@ -299,10 +344,52 @@
 			}
 		},
 
-		_userRole(){
-			if(this.user.role && this.user.role.indexOf('admin') !== -1){
-				this.admin = true;
+		/**
+		 * Action Dialog confirmation handler
+		 * Closes the Dialog and executes the calles `_handleConfirmationDialogAction`
+		 * method with parameter `true`
+		 */
+		_confirmActionDialog() {
+			this.$['confirmation-dialog'].close();
+			this.confirmationDialogCaller._handleConfirmationDialogAction(true);
+		},
+
+		/**
+		 * Executed on Event `open-confirmation-dialog`.
+		 * Saves the caller node to `this.confirmationDialogCaller`, sets the dialog
+		 * innerHTML and opens the dialog
+		 * @param  {Event} e Event object
+		 */
+		_confirmationDialogHandler(e) {
+			this.confirmationDialogCaller = e.detail.node;
+			this.$['confirmation-dialog-inner-msg'].innerHTML = e.detail.msg || '¿Estas seguro?';
+			this.$['confirmation-dialog'].open();
+		},
+
+		/**
+		 * Ensures lazy-elements.html load if it hasn't yet been pulled in.
+		 */
+		_ensureLazyLoaded: function() {
+			// load lazy resources after render and set `loadComplete` when done.
+			if (!this.loadComplete) {
+				Polymer.RenderStatus.afterNextRender(this, function() {
+					this.importHref(this.resolveUrl('lazy-resources.html'), function() {
+						this.loadComplete = true;
+					});
+				});
 			}
+		},
+
+		/**
+		 * Executed on Event `session-expired`
+		 * Sets the route to home, sends logout action to clean any residual user
+		 * data and setups an information toast
+		 * @param  {Event} e      Event Object
+		 */
+		_expiredSessionHandler(e) {
+			this.set('route.path', '/');
+			this._setupToast(e);
+			this.fire('logout');
 		},
 
 		/**
@@ -313,8 +400,14 @@
 			window.open(window.location.origin + '/api/auth/google', '', dimensions);
 		},
 
+		/**
+		 * Exectued when the page property changes
+		 * Ensures lazy-load elements present, verifies the page is in whitelist and
+		 * that the user is active.
+		 * @param  {String} page Page name
+		 */
 		_pageChanged: function(page) {
-			if(!this._checkWhitList(page)){
+			if(!this._checkWhiteList(page)){
 				this.set('route.path', '/');
 				return;
 			}
@@ -333,10 +426,28 @@
 			}
 		},
 
+		/**
+		 * Executed when a page HTML file has finished loading
+		 */
 		_pageLoaded: function() {
 			this._ensureLazyLoaded();
 		},
 
+		/**
+		 * Executed when an external message is received
+		 * @param  {String} msg External message string
+		 */
+		_receivedExternalMsg(msg) {
+			if(msg === 'You are not a Beeva employee') {
+				this.toastMsg = 'Solo se puede acceder con una cuenta @beeva';
+				this.$['app-toast'].open();
+			}
+		},
+
+		/**
+		 * Executed when a route change is detected by the app-router element
+		 * @param  {String} route Route name
+		 */
 		_routeChange: function(route) {
 			// Abstract
 			this.page = route;
@@ -348,58 +459,29 @@
 			}
 		},
 
-		_ensureLazyLoaded: function() {
-			// load lazy resources after render and set `loadComplete` when done.
-			if (!this.loadComplete) {
-				Polymer.RenderStatus.afterNextRender(this, function() {
-					this.importHref(this.resolveUrl('lazy-resources.html'), function() {
-						this.loadComplete = true;
-					});
-				});
-			}
-		},
-
-		_sectionLoaded: function(e){
-			this.pageTitle = e.detail.title;
-		},
-
-		_checkWhitList: function(page){
-			if(this.pageWhitList.indexOf(page) !== -1){
-				return true;
-			}
-			return false;
-		},
-
+		/**
+		 * Executed on page/route change to set the header title
+		 * @param {String} page Page name
+		 */
 		_setPageTitle: function(page){
 			this.pageTitle = this.pageTitles[page];
 		},
 
-		_setupToast: function (event) {
-			this.toastMsg = event.detail.message;
+		/**
+		 * Toast setup method. Executed on Event `new-toast`
+		 * @param  {Event} e Event Object
+		 */
+		_setupToast: function (e) {
+			this.toastMsg = e.detail.message;
 			this.$['app-toast'].open();
 		},
 
-		_expiredSessionHandler(event) {
-			this.set('route.path', '/');
-			this._setupToast(event);
-			this.fire('logout');
-		},
-
-		_confirmationDialogHandler(e) {
-			this.confirmationDialogCaller = e.detail.node;
-			this.$['confirmation-dialog-inner-msg'].innerHTML = e.detail.msg || '¿Estas seguro?';
-			this.$['confirmation-dialog'].open();
-		},
-
-		_confirmActionDialog() {
-			this.$['confirmation-dialog'].close();
-			this.confirmationDialogCaller._handleConfirmationDialogAction(true);
-		},
-
-		_receivedExternalMsg(msg) {
-			if(msg === 'You are not a Beeva employee') {
-				this.toastMsg = 'Solo se puede acceder con una cuenta @beeva';
-				this.$['app-toast'].open();
+		/**
+		 * Checks user role received in order to set admin/not-admin
+		 */
+		_userRole(){
+			if(this.user.role && this.user.role.indexOf('admin') !== -1){
+				this.admin = true;
 			}
 		}
 
