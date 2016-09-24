@@ -10,7 +10,7 @@ exports.returnWithToken = (req, res) => {
 			displayName: req.user.google.displayName,
 			role: req.user.role
 		};
-		const token = jwt.sign(encryptData, config.serverSecret, { expiresIn: 120 }); // in seconds (2 minutes)
+		const token = jwt.sign(encryptData, config.serverSecret, { expiresIn: 1200 }); // in seconds (20 minutes)
 		const responseObj = {
 			token
 		};
