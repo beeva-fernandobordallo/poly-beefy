@@ -146,7 +146,9 @@
 			}
 		},
 		_xhrDataReceived(res) {
-			this._saveCourseData(this._treatCourseData(res.detail.data.data));
+			if(res.detail.data){
+				this._saveCourseData(this._treatCourseData(res.detail.data.data));
+			}
 		},
 		_xhrError(err) {
 			console.log(err.detail);

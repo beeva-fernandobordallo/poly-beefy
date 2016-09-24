@@ -127,10 +127,10 @@
 		 * @param {Event} res Event Object
 		 */
 		_xhrDataReceived(res) {
-			if(res.detail.reqId === '/api/my-mail') {
+			if(res.detail.reqId === '/api/my-mail' && res.detail.data) {
 				const mails = res.detail.data.data || [];
 				this.set('myMails', mails);
-			} else if (res.detail.reqId === '/api/mail/create') {
+			} else if (res.detail.reqId === '/api/mail/create' && res.detail.data) {
 				this.push('myMails', res.detail.data.data);
 			}
 		},

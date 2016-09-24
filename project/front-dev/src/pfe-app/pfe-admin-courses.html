@@ -369,12 +369,12 @@
 		},
 
 		_xhrDataReceived(res) {
-			if(res.detail.reqId === '/api/courses/create'){
+			if(res.detail.reqId === '/api/courses/create' && res.detail.data){
 				this.push('courses', res.detail.data.data);
 				this._clearCourseCreateForm();
 				this.$["create-dialog"].close();
 				this.fire('new-toast', {message: 'Curso creado correctamente.'});
-			} else if (res.detail.reqId === '/api/courses'){
+			} else if (res.detail.reqId === '/api/courses' && res.detail.data){
 				this.courses = res.detail.data.data;
 			} else if (res.detail.reqId === '/api/courses/delete'){
 				this[this.courseBeingDeleted.state].forEach((item, index) => {
@@ -384,7 +384,7 @@
 				});
 				this.courseBeingDeleted = null;
 				this.fire('new-toast', {message: 'Borrador de curso eliminado correctamente.'});
-			} else if(res.detail.reqId === '/api/courses/edit'){
+			} else if(res.detail.reqId === '/api/courses/edit' && res.detail.data){
 				const data = res.detail.data.data;
 				this.$["create-dialog"].close();
 				this._clearCourseCreateForm();
