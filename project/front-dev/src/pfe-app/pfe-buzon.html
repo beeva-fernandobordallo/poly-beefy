@@ -1,8 +1,52 @@
 <dom-module id="pfe-buzon">
 	<template>
 		<style include="iron-flex iron-flex-alignment"></style>
+
+		<style>
+
+			.mail-form {
+				width: 90%;
+				margin: 0 auto;
+			}
+
+			.mail-list {
+				width: 90%;
+				margin: 50px auto 20px auto;
+			}
+
+		</style>
+
+		<!-- XHR Element -->
+		<pfe-xhr id="mail-xhr-element" on-data="_xhrDataReceived" on-error="_xhrError"></pfe-xhr>
+
+		<!-- Page layout -->
 		<div class="layout vertical center">
 			<h1>Buzón</h1>
+		</div>
+		<div class="mail-container">
+			<div class="mail-form">
+				<h3><u>Contacta con nosotros</u></h3>
+				<label for="mail-type-group">Tipo de mensaje: </label>
+				<paper-radio-group name="mail-type-group" selected="{{mailType}}">
+					<paper-radio-button name="feedback">Feedback</paper-radio-button>
+					<paper-radio-button name="sugestion">Sugerencia</paper-radio-button>
+					<paper-radio-button name="bug">Bug</paper-radio-button>
+					<paper-radio-button name="generic">General</paper-radio-button>
+				</paper-radio-group>
+				<paper-textarea id="mail-body" label="Mensaje" char-counter></paper-textarea>
+				<br>
+				<paper-button raised on-tap="_sendMail">Enviar</paper-button>
+			</div>
+			<div class="mail-list">
+				<template is="dom-repeat" items="[[myMails]]">
+					{{item.type}}
+					<br>
+					{{item.body}}
+					<br>
+					<br>
+					<br>
+				</template>
+			</div>
 		</div>
 	</template>
 	<script>
@@ -12,13 +56,92 @@
 			PfeBehaviors.ServLocationBehavior
 		],
 		properties: {
+			/**
+			 * Route Name used by Location Service Behaviour
+			 * @type {Object}
+			 */
 			pageRoute: {
 				type: String,
 				value: '/buzon'
+			},
+
+			/**
+			 * Mail type selector value
+			 * @type {String}
+			 */
+			mailType: {
+				type: String
+			},
+
+			/**
+			 * Array containing all mails sent by user
+			 * @type {Array}
+			 */
+			myMails: {
+				type: Array,
+				value: function(){
+					return [];
+				}
+			},
+
+			/**
+			 * User Token
+			 * @type {String}
+			 */
+			token: {
+				type: String,
+				value: ''
 			}
 		},
+
+		/**
+		 * Method called when the page is loaded
+		 */
 		_pageAccessed(){
-			// console.log('I accessed buzon');
+			if(this.myMails.length < 1){
+				this.$["mail-xhr-element"].xhr({
+					url: '/api/my-mail',
+					token: this.token || null
+				});
+			}
+		},
+
+		/**
+		 * Send new mail hander
+		 */
+		_sendMail(){
+			const newMail = {
+				type: this.mailType,
+				body: this.$['mail-body'].value
+			};
+			this.$["mail-xhr-element"].xhr({
+				url: '/api/mail/create',
+				method: 'POST',
+				body: newMail,
+				token: this.token || null
+			});
+		},
+
+		/**
+		 * Method called on XHR Data Correct receival
+		 * @param {Event} res Event Object
+		 */
+		_xhrDataReceived(res) {
+			if(res.detail.reqId === '/api/my-mail') {
+				const mails = res.detail.data.data || [];
+				this.set('myMails', mails);
+			} else if (res.detail.reqId === '/api/mail/create') {
+				this.push('myMails', res.detail.data.data);
+			}
+		},
+
+		/**
+		 * Method called on XHR Error
+		 * @param {Event} e Event Object
+		 */
+		_xhrError(e) {
+			console.log('Mail XHR Error');
+			console.log(e);
 		}
 	});
 	</script>

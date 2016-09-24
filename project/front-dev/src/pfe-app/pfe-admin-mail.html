@@ -1,0 +1,25 @@
+<dom-module id="pfe-admin-mail">
+	<template>
+		<style include="iron-flex iron-flex-alignment"></style>
+		<div class="layout vertical center">
+			<h1>Administración del Buzón</h1>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'pfe-admin-mail',
+			behaviors: [
+				PfeBehaviors.ServLocationBehavior
+			],
+			properties: {
+				pageRoute: {
+					type: String,
+					value: '/admin-mail'
+				}
+			},
+			_pageAccessed(){
+				// console.log('I accessed Mis cursos');
+			}
+		});
+	</script>
+</dom-module>

@@ -147,6 +147,12 @@
 									Administrar Cursos
 									<span class="flex"></span>
 								</paper-item></a>
+								<a href="/admin-mail"><paper-item>
+									<iron-icon icon="chrome-reader-mode"></iron-icon>
+									<span class="flex"></span>
+									Administrar Buzón
+									<span class="flex"></span>
+								</paper-item></a>
 							</template>
 							<hr>
 							<paper-item on-tap="logout">
@@ -184,6 +190,9 @@
 							<template is="dom-if" if="{{admin}}">
 								<section data-route="admin-courses">
 									<pfe-admin-courses token="[[token]]"></pfe-admin-courses>
+								</section>
+								<section data-route="admin-mail">
+									<pfe-admin-mail token="[[token]]"></pfe-admin-mail>
 								</section>
 							</template>
 						</iron-pages>
@@ -245,7 +254,8 @@
 						'catalogo',
 						'mis-cursos',
 						'buzon',
-						'admin-courses'
+						'admin-courses',
+						'admin-mail'
 					];
 				}
 			},
@@ -262,7 +272,8 @@
 						'catalogo': 'Catálogo de Cursos / Certificaciones',
 						'mis-cursos': 'Portfolio Personal',
 						'buzon': 'Buzón PFE',
-						'admin-courses': 'Administrar Cursos'
+						'admin-courses': 'Administrar Cursos',
+						'admin-mail': 'Administrar Buzón'
 					};
 				}
 			},
