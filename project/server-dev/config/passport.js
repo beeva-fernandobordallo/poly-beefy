@@ -31,8 +31,8 @@ module.exports = (passport, app) => {
 			// User.findOne won't fire until we have all our data back from Google
 			process.nextTick(function() {
 
-				var beevaRegex = new RegExp("@beeva.com$")
-				if(!profile.emails[0].value || !beevaRegex.test(profile.emails[0].value)){
+				var accountRegex = new RegExp("@gmail.com$")
+				if(!profile.emails[0].value || !accountRegex.test(profile.emails[0].value)){
 					return done(null, {error: true});
 				}
 

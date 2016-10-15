@@ -1,27 +1,24 @@
 {
   "name": "beefcake",
   "version": "0.0.1",
-  "description": "Portal de formación externa para Beeva. Catálogo de cursos disponibles.",
+  "description": "Portal multi tech.",
   "main": "server.js",
   "scripts": {
     "test": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beeva/formacion-portal-formacionexterna.git"
+    "url": "git+https://github.com/ferborva/poly-beefy.git"
   },
   "keywords": [
-    "portal",
-    "formacion",
-    "externa",
-    "beeva"
+    "portal"
   ],
-  "author": "beeva",
+  "author": "FBV",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/beeva/formacion-portal-formacionexterna/issues"
+    "url": "https://github.com/ferborva/poly-beefy/issues"
   },
-  "homepage": "https://github.com/beeva/formacion-portal-formacionexterna#readme",
+  "homepage": "https://github.com/ferborva/poly-beefy#readme",
   "dependencies": {
     "body-parser": "1.15.1",
     "ejs": "2.4.2",

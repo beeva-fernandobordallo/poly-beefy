@@ -47,8 +47,8 @@ exports.createCourse = (req, res) => {
 	// req.body example:
 	// { name: 'Test Course',
 	// description: 'This course will be focused on teaching software developers good practices and cleanCode standards',
-	// entity: 'Beeva',
-	// url: 'http://www.beeva.com',
+	// entity: 'boom',
+	// url: 'http://www.boom.com',
 	// cost: '200',
 	// date: '1471893529251',
 	// inscription_limit: '30' }

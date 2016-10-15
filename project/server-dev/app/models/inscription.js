@@ -39,7 +39,7 @@ const inscriptionSchema = mongoose.Schema({
 		type: Boolean,
 		default: false
 	},
-	payed_by_beeva: {
+	payed: {
 		type: Boolean,
 		default: false
 	}

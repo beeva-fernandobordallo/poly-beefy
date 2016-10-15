@@ -1,5 +1,5 @@
 module.exports = {
 
-	serverSecret: 'beeva rocks and you know it'
+	serverSecret: 'weeee rocks and you know it'
 
 }

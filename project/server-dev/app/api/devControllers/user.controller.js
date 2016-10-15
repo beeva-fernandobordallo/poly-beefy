@@ -13,7 +13,7 @@ exports.devUser = function(req, res, next){
 			let devUser = new User();
 			devUser.google.id = 'dev_user';
 			devUser.google.displayName = 'Dev User';
-			devUser.google.email = 'pfe-user@beeva.com';
+			devUser.google.email = 'pfe-user@gmail.com';
 			// save our user to the database
 			devUser.save((err) => {
 				if (err) {
@@ -40,7 +40,7 @@ exports.adminUser = function(req, res, next){
 			let adminUser = new User();
 			adminUser.google.id = 'admin_user';
 			adminUser.google.displayName = 'Admin User';
-			adminUser.google.email = 'pfe-admin@beeva.com';
+			adminUser.google.email = 'pfe-admin@gmail.com';
 			adminUser.role = ['admin'];
 			// save our user to the database
 			adminUser.save((err) => {
@@ -68,7 +68,7 @@ exports.financeUser = function(req, res, next){
 			let financeUser = new User();
 			financeUser.google.id = 'finance_user';
 			financeUser.google.displayName = 'Finance User';
-			financeUser.google.email = 'pfe-finance@beeva.com';
+			financeUser.google.email = 'pfe-finance@gmail.com';
 			financeUser.role = ['financial'];
 			// save our user to the database
 			financeUser.save((err) => {
@@ -96,7 +96,7 @@ exports.webmasterUser = function(req, res, next){
 			let webmasterUser = new User();
 			webmasterUser.google.id = 'master_user';
 			webmasterUser.google.displayName = 'Master User';
-			webmasterUser.google.email = 'pfe-master@beeva.com';
+			webmasterUser.google.email = 'pfe-master@gmail.com';
 			webmasterUser.role = ['webmaster'];
 			// save our user to the database
 			webmasterUser.save((err) => {

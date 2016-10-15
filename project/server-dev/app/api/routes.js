@@ -40,7 +40,7 @@ module.exports = function apiRouteSetup(app, passport) {
 					state: 'failure',
 					token: null,
 					userData: null,
-					message: 'You are not a Beeva employee'
+					message: 'You are not an employee'
 				});
 			} else {
 				const googleUsr = req.user.google;
